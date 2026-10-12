@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<theme_config version="2.5.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+    <!-- ==================================================================== -->
+    <!-- 1. CORPORATE IDENTIFICATION & STATUTORY METADATA                      -->
+    <!-- ==================================================================== -->
+    <corporate_entity>
+        <identity>
+            <legal_name>JALMATI FARMERS PRODUCER COMPANY LIMITED</legal_name>
+            <short_name>Jalmati FPC</short_name>
+            <cin>U01611WR2026PTC293091</cin>
+            <pan_placeholder>ABCDE1234F</pan_placeholder>
+            <registration_number>293091</registration_number>
+            <incorporation_date>2026-03-25</incorporation_date>
+            <age_status>6 Months (Active)</age_status>
+            <status>Active</status>
+            <class>Private</class>
+            <category>Company limited by shares</category>
+            <sub_category>Non-government company / Producer Company</sub_category>
+            <listing_status>Unlisted</listing_status>
+            <registrar>ROC Kolkata</registrar>
+        </identity>
+
+        <industry_classification>
+            <nic_code>01</nic_code>
+            <nic_description>AGRICULTURE, HUNTING AND RELATED SERVICE ACTIVITIES</nic_description>
+            <operating_sector>Farmer Producer Organization (FPO) / Agribusiness</operating_sector>
+        </industry_classification>
+
+        <capital_structure currency="INR">
+            <authorized_capital amount="1000000.00">10,00,000 INR (10 Lakhs)</authorized_capital>
+            <paid_up_capital amount="100000.00">1,00,000 INR (1 Lakh)</paid_up_capital>
+            <face_value_per_share>10.00</face_value_per_share>
+        </capital_structure>
+
+        <registered_address>
+            <care_of>Someswar Ghosh</care_of>
+            <premise>Bhandara</premise>
+            <block_tehsil>Murshidabad</block_tehsil>
+            <district>Murshidabad</district>
+            <state>West Bengal</state>
+            <pincode>742138</pincode>
+            <country>India</country>
+            <geo_coordinates lat="24.1800" long="88.2700"/>
+        </registered_address>
+
+        <statutory_documents>
+            <doc id="DOC-COI-01" category="Certificates" name="Certificate of Incorporation" filing_date="2026-03-24"/>
+            <doc id="DOC-AOA-01" category="Incorporation" name="Articles of Association" filing_date="2026-03-24"/>
+            <doc id="DOC-MOA-01" category="Incorporation" name="Memorandum of Association" filing_date="2026-03-24"/>
+        </statutory_documents>
+    </corporate_entity>
+
+    <!-- ==================================================================== -->
+    <!-- 2. UI BRANDING & DESIGN SYSTEM STYLES                                -->
+    <!-- ==================================================================== -->
+    <design_system>
+        <typography>
+            <font_primary>'Inter', -apple-system, BlinkMacSystemFont, sans-serif</font_primary>
+            <font_mono>'JetBrains Mono', monospace</font_mono>
+            <base_font_size>14px</base_font_size>
+        </typography>
+
+        <color_palette mode="light">
+            <brand_primary>#1E5E3A</brand_primary>     <!-- Forest Ag Green -->
+            <brand_secondary>#0D3B22</brand_secondary>   <!-- Deep Pine Green -->
+            <accent_amber>#D97706</accent_amber>      <!-- Crop Gold/Amber -->
+            <accent_teal>#0D9488</accent_teal>       <!-- Water/Irrigation Teal -->
+            <surface_bg>#F8FAFC</surface_bg>        <!-- High-contrast ERP light slate -->
+            <card_bg>#FFFFFF</card_bg>
+            <border_color>#E2E8F0</border_color>
+            <text_primary>#0F172A</text_primary>
+            <text_secondary>#475569</text_secondary>
+        </color_palette>
+
+        <layout_grid columns="12" gap="16px" max_width="1600px"/>
+    </design_system>
+
+    <!-- ==================================================================== -->
+    <!-- 3. ADVANCED ERP MODULE DEFINITIONS & DATA SCHEMAS                    -->
+    <!-- ==================================================================== -->
+    <erp_core_modules>
+        
+        <!-- Module 1: FPC Shareholder & Farmer Ledger -->
+        <module id="mod_shareholders" status="active">
+            <name>Farmer Member Management &amp; Share Ledger</name>
+            <route>/erp/shareholders</route>
+            <data_tables>
+                <table name="fpc_members">
+                    <column name="member_id" type="VARCHAR(20)" primary_key="true"/>
+                    <column name="farmer_name" type="VARCHAR(100)"/>
+                    <column name="aadhaar_hash" type="VARCHAR(64)"/>
+                    <column name="land_holding_acres" type="DECIMAL(5,2)"/>
+                    <column name="shares_allotted" type="INT"/>
+                    <column name="paid_amount" type="DECIMAL(10,2)"/>
+                    <column name="payout_bank_ifsc" type="VARCHAR(11)"/>
+                </table>
+            </data_tables>
+            <workflows>
+                <step seq="1">KYC Validation &amp; Land Record Verification</step>
+                <step seq="2">Share Allotment (Rs. 10 Face Value)</step>
+                <step seq="3">Dividend &amp; Patronage Bonus Distribution Engine</step>
+            </workflows>
+        </module>
+
+        <!-- Module 2: Agricultural Procurement & Direct Farm-Gate Purchase -->
+        <module id="mod_procurement" status="active">
+            <name>Produce Procurement &amp; Weighbridge QC</name>
+            <route>/erp/procurement</route>
+            <features>
+                <feature code="PROC_BATCH">Batch Weighment &amp; Moisture Testing</feature>
+                <feature code="PROC_MSP">MSP Baseline &amp; Market Rate Comparison</feature>
+                <feature code="PROC_RECEIPT">Instant Farmer Electronic Weight Receipt (e-Receipt)</feature>
+            </features>
+            <integrations>
+                <service>e-NAM Portal API Sync</service>
+                <service>Digital Weighbridge Hardware Reader</service>
+            </integrations>
+        </module>
+
+        <!-- Module 3: Inventory & Warehouse Management (Murshidabad Hub) -->
+        <module id="mod_inventory" status="active">
+            <name>Inventory &amp; Warehousing Engine</name>
+            <route>/erp/inventory</route>
+            <locations>
+                <hub id="HUB-MUR-01" primary="true">
+                    <name>Murshidabad Central Ag-Hub</name>
+                    <address>Bhandara, Murshidabad, WB 742138</address>
+                    <storage_types>
+                        <type>Cold Storage (Fruit &amp; Vegetable)</type>
+                        <type>Dry Grain Silos</type>
+                        <type>Fertilizer &amp; Seed Depot</type>
+                    </storage_types>
+                </hub>
+            </locations>
+        </module>
+
+        <!-- Module 4: Accounting, Invoicing & GST Compliance -->
+        <module id="mod_accounting" status="active">
+            <name>General Ledger &amp; Tax Compliance Engine</name>
+            <route>/erp/accounting</route>
+            <taxation_rules country="IN">
+                <state_code>19</state_code> <!-- West Bengal GST Code -->
+                <gstin_type>Regular / Ag-Cooperative Exemption</gstin_type>
+                <supported_taxes>
+                    <tax code="CGST">Central GST</tax>
+                    <tax code="SGST">State GST (West Bengal)</tax>
+                    <tax code="IGST">Integrated GST</tax>
+                </supported_taxes>
+            </taxation_rules>
+            <chart_of_accounts>
+                <account_group code="1000" name="Assets">
+                    <account code="1100" name="Cash &amp; Bank Balances"/>
+                    <account code="1200" name="Produce Stock Inventory"/>
+                    <account code="1300" name="Agri-Input Advances to Farmers"/>
+                </account_group>
+                <account_group code="2000" name="Liabilities">
+                    <account code="2100" name="Share Capital (Paid-up: 1,00,000 INR)"/>
+                    <account code="2200" name="Farmer Payables (Produce Procurement)"/>
+                </account_group>
+            </chart_of_accounts>
+        </module>
+    </erp_core_modules>
+
+    <!-- ==================================================================== -->
+    <!-- 4. DASHBOARD UI TEMPLATES & LAYOUT ENGINE                            -->
+    <!-- ==================================================================== -->
+    <ui_templates>
+        
+        <!-- Header Structure -->
+        <template name="header">
+            <component type="navbar">
+                <logo_text>Jalmati Farmers Producer Co. Ltd.</logo_text>
+                <badge status="success">CIN: U01611WR2026PTC293091</badge>
+                <menu>
+                    <item target="/dashboard">Dashboard</item>
+                    <item target="/procurement">Procurement</item>
+                    <item target="/inventory">Warehouse</item>
+                    <item target="/accounting">Accounting &amp; GST</item>
+                    <item target="/shareholders">Share Ledger</item>
+                </menu>
+            </component>
+        </template>
+
+        <!-- Main Dashboard View -->
+        <template name="main_dashboard">
+            <grid_layout columns="4">
+                
+                <widget id="w_paid_up_capital" type="stat_card">
+                    <title>Paid-Up Capital</title>
+                    <value currency="INR">100,000.00</value>
+                    <subtitle>Authorized: ₹10,00,000.00</subtitle>
+                    <icon>currency-rupee</icon>
+                </widget>
+
+                <widget id="w_active_status" type="stat_card">
+                    <title>Entity Status</title>
+                    <value>ACTIVE</value>
+                    <subtitle>Incorp: 25-Mar-2026 (ROC Kolkata)</subtitle>
+                    <icon>check-circle</icon>
+                </widget>
+
+                <widget id="w_procurement_volume" type="stat_card">
+                    <title>Monthly Produce Procured</title>
+                    <value unit="MT">0.00</value>
+                    <subtitle>Murshidabad Hub</subtitle>
+                    <icon>truck</icon>
+                </widget>
+
+                <widget id="w_farmer_members" type="stat_card">
+                    <title>Registered Farmers</title>
+                    <value>0</value>
+                    <subtitle>West Bengal Region</subtitle>
+                    <icon>users</icon>
+                </widget>
+
+            </grid_layout>
+        </template>
+
+        <!-- Footer Legal Structure -->
+        <template name="footer">
+            <component type="legal_footer">
+                <company_statement>
+                    JALMATI FARMERS PRODUCER COMPANY LIMITED is a registered Producer Company incorporated under the Companies Act, India. Registered C/O Someswar Ghosh, Bhandara, Murshidabad, West Bengal, 742138.
+                </company_statement>
+                <copyright>© 2026 JALMATI FARMERS PRODUCER COMPANY LIMITED. All Rights Reserved.</copyright>
+            </component>
+        </template>
+    </ui_templates>
+
+</theme_config>
