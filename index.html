@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jalmati FPC - Enterprise ERP & Accounting Suite</title>
+    <title>Jalmati FPC - Advanced Enterprise ERP & Accounting Suite</title>
     <style>
         :root {
             --green: #176b45;
@@ -13,6 +13,7 @@
             --line: #dce7df;
             --text: #203328;
             --muted: #718075;
+            --accent: #d97706;
         }
 
         * { box-sizing: border-box; }
@@ -101,7 +102,7 @@
 
         .layout {
             display: grid;
-            grid-template-columns: 220px minmax(0, 1fr);
+            grid-template-columns: 240px minmax(0, 1fr);
             gap: 17px;
         }
 
@@ -182,6 +183,8 @@
         .actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 13px; }
         .secondary { background: #eaf3ec; color: var(--green); }
         .danger { background: #a93131; }
+        .accent-btn { background: var(--accent); }
+        .accent-btn:hover { background: #b45309; }
 
         .hidden { display: none !important; }
 
@@ -214,67 +217,69 @@
 </head>
 <body>
     <div class='top'>
-        <div>🌱 JALMATI FPC | Enterprise ERP &amp; Accounting Suite</div>
-        <div><span class='auth-badge' id='user-badge'>Murshidabad Hub Active</span></div>
+        <div>🌱 JALMATI FPC | Advanced Enterprise ERP &amp; GST Suite</div>
+        <div><span class='auth-badge'>Murshidabad Hub (State Code: 19)</span></div>
     </div>
 
     <header>
         <h1>JALMATI FARMERS PRODUCER COMPANY LIMITED</h1>
-        <p>CIN: U01611WR2026PTC293091 • Farmer Management, Purchases, Sales &amp; Stock</p>
+        <p>CIN: U01611WR2026PTC293091 • Advanced Stock, GST Invoicing &amp; Member Ledger</p>
     </header>
 
     <div class='wrap'>
         <div class='notice'>
-            <strong>Live GitHub Pages ERP Workspace.</strong> Records are saved securely in your browser's local storage. Export JSON backups regularly.
+            <strong>Advanced ERP Engine Active.</strong> Features automated stock deduction safeguards, GST (CGST+SGST 18%) calculation support, and printable tax invoices.
         </div>
 
         <div class='layout'>
             <nav>
                 <button class='navbtn active' data-page='dashboard'>▦ Dashboard</button>
-                <button class='navbtn' data-page='members'>♙ Farmers / Members</button>
-                <button class='navbtn' data-page='purchases'>↓ Purchases</button>
-                <button class='navbtn' data-page='sales'>↑ Sales</button>
-                <button class='navbtn' data-page='products'>▤ Products / Stock</button>
-                <button class='navbtn' data-page='expenses'>₹ Expenses</button>
-                <button class='navbtn' data-page='ledger'>⇄ Cashbook / Ledger</button>
-                <button class='navbtn' data-page='reports'>▥ Reports</button>
+                <button class='navbtn' data-page='members'>♙ Farmers / Share Ledger</button>
+                <button class='navbtn' data-page='purchases'>↓ Purchases &amp; Inward</button>
+                <button class='navbtn' data-page='sales'>↑ Sales &amp; GST Invoicing</button>
+                <button class='navbtn' data-page='products'>▤ Inventory &amp; Stock Hub</button>
+                <button class='navbtn' data-page='expenses'>₹ Operational Expenses</button>
+                <button class='navbtn' data-page='ledger'>⇄ Cashbook / Bank Ledger</button>
+                <button class='navbtn' data-page='reports'>▥ Financial Reports</button>
                 <button class='navbtn' data-page='settings'>⚙ Backup &amp; Settings</button>
             </nav>
 
             <main>
+                <!-- Dashboard Section -->
                 <section class='page' id='page-dashboard'>
                     <div class='heading'>
                         <div>
                             <h2>Executive Dashboard</h2>
-                            <span class='muted'>Financial Summary</span>
+                            <span class='muted'>Real-time FPC financial indicators</span>
                         </div>
-                        <button onclick='JFP.backup()'>Export Backup</button>
+                        <button onclick='JFP.backup()'>Export JSON Backup</button>
                     </div>
 
                     <div class='cards'>
-                        <div class='metric'><small>Total Sales</small><strong id='m-sales'>₹0.00</strong></div>
+                        <div class='metric'><small>Total Sales (Incl. GST)</small><strong id='m-sales'>₹0.00</strong></div>
                         <div class='metric'><small>Total Purchases</small><strong id='m-purchases'>₹0.00</strong></div>
                         <div class='metric'><small>Total Expenses</small><strong id='m-expenses'>₹0.00</strong></div>
-                        <div class='metric'><small>Net Movement</small><strong id='m-net'>₹0.00</strong></div>
+                        <div class='metric'><small>Net Surplus</small><strong id='m-net'>₹0.00</strong></div>
                     </div>
 
                     <div class='grid2'>
                         <div class='panel'>
                             <h3>Quick Actions</h3>
                             <div class='actions'>
-                                <button onclick='JFP.page("members")'>Add Farmer</button>
+                                <button onclick='JFP.page("members")'>Add Member</button>
                                 <button onclick='JFP.page("purchases")'>New Purchase</button>
-                                <button onclick='JFP.page("sales")'>New Sale</button>
+                                <button onclick='JFP.page("sales")'>Generate Sale</button>
                                 <button onclick='JFP.page("expenses")'>Add Expense</button>
                             </div>
                         </div>
 
                         <div class='panel'>
-                            <h3>Corporate Details</h3>
+                            <h3>Corporate Particulars</h3>
                             <p class='muted'>
+                                <strong>Legal Entity:</strong> Jalmati Farmers Producer Company Limited<br/>
                                 <strong>CIN:</strong> U01611WR2026PTC293091<br/>
-                                <strong>Registered Address:</strong> C/O Someswar Ghosh, Bhandara, Murshidabad, West Bengal 742138<br/>
-                                <strong>Incorporation:</strong> March 25, 2026 (ROC Kolkata)
+                                <strong>Registered Office:</strong> C/O Someswar Ghosh, Bhandara, Murshidabad, West Bengal 742138<br/>
+                                <strong>Paid-up Capital:</strong> ₹1,00,000.00 | Authorized: ₹10,00,000.00
                             </p>
                         </div>
                     </div>
@@ -285,330 +290,88 @@
                     </div>
                 </section>
 
+                <!-- Members Section -->
                 <section class='page hidden' id='page-members'>
-                    <div class='heading'><h2>Farmer / Member Directory</h2></div>
+                    <div class='heading'><h2>Farmer Member &amp; Shareholder Register</h2></div>
                     <div class='panel'>
-                        <h3>Add Farmer Member</h3>
+                        <h3>Register New Producer Member</h3>
                         <form id='member-form'>
                             <div class='formgrid'>
-                                <div class='field'><label>Name *</label><input name='name' required></div>
-                                <div class='field'><label>Member ID</label><input name='code'></div>
-                                <div class='field'><label>Phone</label><input name='phone'></div>
-                                <div class='field'><label>Village</label><input name='village' value='Bhandara'></div>
-                                <div class='field'><label>Joining Date</label><input name='date' type='date'></div>
-                                <div class='field'><label>Notes</label><input name='notes'></div>
+                                <div class='field'><label>Farmer Full Name *</label><input name='name' required></div>
+                                <div class='field'><label>Member ID</label><input name='code' placeholder='JFP-MEM-001'></div>
+                                <div class='field'><label>Phone Number</label><input name='phone' inputmode='tel'></div>
+                                <div class='field'><label>Village / Tehsil</label><input name='village' value='Bhandara, Murshidabad'></div>
+                                <div class='field'><label>Land Holding (Acres)</label><input name='land' type='number' step='0.1' value='1.0'></div>
+                                <div class='field'><label>Shares Allotted (₹10 Face Value)</label><input name='shares' type='number' value='10'></div>
                             </div>
-                            <div class='actions'><button type='submit'>Save Member</button></div>
+                            <div class='actions'><button type='submit'>Save Member Record</button></div>
                         </form>
                     </div>
-                    <div class='panel'><h3>Member Register</h3><div id='members-table'></div></div>
+                    <div class='panel'><h3>All Registered Members</h3><div id='members-table'></div></div>
                 </section>
 
+                <!-- Purchases Section -->
                 <section class='page hidden' id='page-purchases'>
-                    <div class='heading'><h2>Agriculture Purchases (Auto-Stock)</h2></div>
+                    <div class='heading'><h2>Agriculture Purchases &amp; Inward Hub</h2></div>
                     <div class='panel'>
-                        <h3>Record Purchase</h3>
+                        <h3>Record Produce Purchase (Auto-Stock Addition)</h3>
                         <form id='purchase-form'>
                             <div class='formgrid'>
                                 <div class='field'><label>Date *</label><input name='date' type='date' required></div>
-                                <div class='field'><label>Farmer / Supplier *</label><input name='party' required></div>
-                                <div class='field'><label>Product / Crop *</label><input name='item' required></div>
+                                <div class='field'><label>Farmer / Supplier Name *</label><input name='party' required></div>
+                                <div class='field'><label>Crop / Produce Name *</label><input name='item' required placeholder='e.g. Raw Paddy / Jute'></div>
                                 <div class='field'><label>Quantity *</label><input name='qty' type='number' min='0' step='0.001' required></div>
                                 <div class='field'><label>Unit</label><select name='unit'><option>kg</option><option>quintal</option><option>tonne</option><option>bag</option></select></div>
                                 <div class='field'><label>Rate per Unit (₹) *</label><input name='rate' type='number' min='0' step='0.01' required></div>
-                                <div class='field'><label>Payment Status</label><select name='status'><option>Paid</option><option>Pending</option></select></div>
-                                <div class='field'><label>Reference</label><input name='ref'></div>
+                                <div class='field'><label>Payment Status</label><select name='status'><option>Paid</option><option>Pending</option><option>Part Paid</option></select></div>
+                                <div class='field'><label>Weighbridge Receipt / Ref</label><input name='ref'></div>
                             </div>
-                            <div class='actions'><button type='submit'>Save Purchase &amp; Add Stock</button></div>
+                            <div class='actions'><button type='submit'>Save Purchase &amp; Update Stock</button></div>
                         </form>
                     </div>
                     <div class='panel'><h3>Purchase Register</h3><div id='purchases-table'></div></div>
                 </section>
 
+                <!-- Sales Section -->
                 <section class='page hidden' id='page-sales'>
-                    <div class='heading'><h2>Agriculture Sales (Auto-Deduct Stock)</h2></div>
+                    <div class='heading'><h2>Agriculture Sales &amp; GST Invoicing</h2></div>
                     <div class='panel'>
-                        <h3>Record Sale</h3>
+                        <h3>Record Sale (Auto-Stock Check &amp; GST Calculation)</h3>
                         <form id='sale-form'>
                             <div class='formgrid'>
                                 <div class='field'><label>Date *</label><input name='date' type='date' required></div>
-                                <div class='field'><label>Customer *</label><input name='party' required></div>
+                                <div class='field'><label>Customer / Buyer *</label><input name='party' required></div>
                                 <div class='field'><label>Product / Crop *</label><input name='item' required></div>
                                 <div class='field'><label>Quantity *</label><input name='qty' type='number' min='0' step='0.001' required></div>
                                 <div class='field'><label>Unit</label><select name='unit'><option>kg</option><option>quintal</option><option>tonne</option><option>bag</option></select></div>
                                 <div class='field'><label>Rate per Unit (₹) *</label><input name='rate' type='number' min='0' step='0.01' required></div>
+                                <div class='field'><label>GST Rate (%)</label><select name='gst'><option value='0'>0% (Agri Exempt)</option><option value='5'>5% GST</option><option value='12'>12% GST</option><option value='18' selected>18% Standard GST</option></select></div>
                                 <div class='field'><label>Payment Status</label><select name='status'><option>Received</option><option>Pending</option></select></div>
-                                <div class='field'><label>Reference</label><input name='ref'></div>
                             </div>
-                            <div class='actions'><button type='submit'>Save Sale &amp; Deduct Stock</button></div>
+                            <div class='actions'>
+                                <button type='submit'>Process Sale &amp; Deduct Stock</button>
+                            </div>
                         </form>
                     </div>
-                    <div class='panel'><h3>Sales Register</h3><div id='sales-table'></div></div>
+                    <div class='panel'>
+                        <h3>Sales Register &amp; Invoices</h3>
+                        <div id='sales-table'></div>
+                    </div>
                 </section>
 
+                <!-- Products Section -->
                 <section class='page hidden' id='page-products'>
-                    <div class='heading'><h2>Products and Stock</h2></div>
+                    <div class='heading'><h2>Inventory &amp; Stock Hub (Murshidabad Center)</h2></div>
                     <div class='panel'>
-                        <h3>Add Product</h3>
+                        <h3>Register Product / Crop Type</h3>
                         <form id='product-form'>
                             <div class='formgrid'>
                                 <div class='field'><label>Product Name *</label><input name='name' required></div>
-                                <div class='field'><label>Product Code</label><input name='code'></div>
-                                <div class='field'><label>Current Quantity</label><input name='qty' type='number' step='0.001' value='0'></div>
-                                <div class='field'><label>Unit</label><select name='unit'><option>kg</option><option>quintal</option><option>tonne</option></select></div>
+                                <div class='field'><label>Product Code</label><input name='code' placeholder='PRD-001'></div>
+                                <div class='field'><label>Initial Stock Quantity</label><input name='qty' type='number' step='0.001' value='0'></div>
+                                <div class='field'><label>Unit</label><select name='unit'><option>kg</option><option>quintal</option><option>tonne</option><option>bag</option></select></div>
                             </div>
                             <div class='actions'><button type='submit'>Save Product</button></div>
                         </form>
                     </div>
-                    <div class='panel'><h3>Product Register</h3><div id='products-table'></div></div>
-                </section>
-
-                <section class='page hidden' id='page-expenses'>
-                    <div class='heading'><h2>Expenses</h2></div>
-                    <div class='panel'>
-                        <h3>Record Expense</h3>
-                        <form id='expense-form'>
-                            <div class='formgrid'>
-                                <div class='field'><label>Date *</label><input name='date' type='date' required></div>
-                                <div class='field'><label>Category</label><select name='category'><option>Transport</option><option>Labour</option><option>Packaging</option><option>Storage</option><option>Office</option><option>Utilities</option></select></div>
-                                <div class='field'><label>Paid To</label><input name='party'></div>
-                                <div class='field'><label>Amount (₹) *</label><input name='amount' type='number' min='0' step='0.01' required></div>
-                                <div class='field'><label>Payment Mode</label><select name='mode'><option>Cash</option><option>Bank</option><option>UPI</option></select></div>
-                                <div class='field'><label>Reference</label><input name='ref'></div>
-                            </div>
-                            <div class='actions'><button type='submit'>Save Expense</button></div>
-                        </form>
-                    </div>
-                    <div class='panel'><h3>Expense Register</h3><div id='expenses-table'></div></div>
-                </section>
-
-                <section class='page hidden' id='page-ledger'>
-                    <div class='heading'><h2>Cashbook / Ledger</h2></div>
-                    <div class='panel'>
-                        <h3>Record Receipt or Payment</h3>
-                        <form id='ledger-form'>
-                            <div class='formgrid'>
-                                <div class='field'><label>Date *</label><input name='date' type='date' required></div>
-                                <div class='field'><label>Type</label><select name='kind'><option>Receipt</option><option>Payment</option></select></div>
-                                <div class='field'><label>Account</label><select name='account'><option>Cash</option><option>Bank Account</option></select></div>
-                                <div class='field'><label>Amount (₹) *</label><input name='amount' type='number' min='0' step='0.01' required></div>
-                                <div class='field'><label>Party / Narration *</label><input name='party' required></div>
-                                <div class='field'><label>Reference</label><input name='ref'></div>
-                            </div>
-                            <div class='actions'><button type='submit'>Save Ledger Entry</button></div>
-                        </form>
-                    </div>
-                    <div class='panel'><h3>Cashbook Register</h3><div id='ledger-table'></div></div>
-                </section>
-
-                <section class='page hidden' id='page-reports'>
-                    <div class='heading'><h2>Reports</h2><button onclick='JFP.csv()'>Export CSV</button></div>
-                    <div class='cards'>
-                        <div class='metric'><small>Members</small><strong id='r-members'>0</strong></div>
-                        <div class='metric'><small>Purchases</small><strong id='r-purchases'>0</strong></div>
-                        <div class='metric'><small>Sales</small><strong id='r-sales'>0</strong></div>
-                        <div class='metric'><small>Products</small><strong id='r-products'>0</strong></div>
-                    </div>
-                    <div class='panel'><h3>All Transactions</h3><div id='all-table'></div></div>
-                </section>
-
-                <section class='page hidden' id='page-settings'>
-                    <div class='heading'><h2>Backup and Settings</h2></div>
-                    <div class='panel'>
-                        <h3>Backup and Restore</h3>
-                        <div class='actions'>
-                            <button onclick='JFP.backup()'>Download JSON Backup</button>
-                            <button class='secondary' onclick='JFP.csv()'>Export CSV</button>
-                        </div>
-                        <p style='margin-top:15px;'><label for='restore-file'>Restore JSON Backup</label><input id='restore-file' type='file' accept='.json,application/json'></p>
-                    </div>
-                    <div class='panel'>
-                        <h3>Delete Records</h3>
-                        <button class='danger' onclick='JFP.clear()'>Delete All Local Records</button>
-                    </div>
-                </section>
-            </main>
-        </div>
-        <div class='footer'>Jalmati Farmers Producer Company Limited · Enterprise ERP Suite</div>
-    </div>
-
-    <script>
-    (function(){
-        'use strict';
-        var KEY = 'jalmati_erp_v3';
-        var blank = function(){ return { members:[], purchases:[], sales:[], products:[], expenses:[], ledger:[] }; };
-        var db = blank();
-        try { var stored = localStorage.getItem(KEY); if (stored) db = Object.assign(blank(), JSON.parse(stored)); } catch(e){}
-
-        function el(id){ return document.getElementById(id); }
-        function esc(v){ return String(v == null ? '' : v).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
-        function n(v){ return Number(v) || 0; }
-        function money(v){ return '₹' + n(v).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2}); }
-        function total(item){ return n(item.qty) * n(item.rate); }
-
-        function save(){
-            try { localStorage.setItem(KEY, JSON.stringify(db)); } catch(e){}
-            render();
-        }
-
-        function updateStock(name, qtyChange){
-            var clean = String(name).trim().toLowerCase();
-            var found = db.products.find(function(p){ return p.name.trim().toLowerCase() === clean; });
-            if(found){ found.qty = n(found.qty) + qtyChange; }
-            else if(qtyChange > 0){
-                db.products.push({ id: Date.now().toString(36), name: name, code: 'PRD-'+Math.floor(100+Math.random()*900), qty: qtyChange, unit: 'kg' });
-            }
-        }
-
-        function formData(f){ return Object.fromEntries(new FormData(f).entries()); }
-
-        function table(id, headers, rows){
-            var target = el(id);
-            if(!rows.length){ target.innerHTML = '<div class="empty">No records yet.</div>'; return; }
-            target.innerHTML = '<div class="tablewrap"><table><thead><tr>' + headers.map(function(h){ return '<th>'+h+'</th>'; }).join('') + '</tr></thead><tbody>' + rows.join('') + '</tbody></table></div>';
-        }
-
-        function rows(type, list, cb){
-            return list.slice().reverse().map(function(item){
-                return '<tr>' + cb(item) + '<td><button class="danger" onclick="JFP.remove(\''+type+'\',\''+item.id+'\')">Delete</button></td></tr>';
-            });
-        }
-
-        el('member-form').addEventListener('submit', function(e){ e.preventDefault(); var x = formData(e.target); x.id = Date.now().toString(36); db.members.push(x); save(); e.target.reset(); alert('Farmer saved.'); });
-        el('purchase-form').addEventListener('submit', function(e){ e.preventDefault(); var x = formData(e.target); x.qty = n(x.qty); x.rate = n(x.rate); x.id = Date.now().toString(36); db.purchases.push(x); updateStock(x.item, x.qty); save(); e.target.reset(); alert('Purchase recorded & stock updated.'); });
-        el('sale-form').addEventListener('submit', function(e){ e.preventDefault(); var x = formData(e.target); x.qty = n(x.qty); x.rate = n(x.rate); x.id = Date.now().toString(36); db.sales.push(x); updateStock(x.item, -x.qty); save(); e.target.reset(); alert('Sale recorded & stock deducted.'); });
-        el('product-form').addEventListener('submit', function(e){ e.preventDefault(); var x = formData(e.target); x.qty = n(x.qty); x.id = Date.now().toString(36); db.products.push(x); save(); e.target.reset(); alert('Product saved.'); });
-        el('expense-form').addEventListener('submit', function(e){ e.preventDefault(); var x = formData(e.target); x.amount = n(x.amount); x.id = Date.now().toString(36); db.expenses.push(x); save(); e.target.reset(); alert('Expense saved.'); });
-        el('ledger-form').addEventListener('submit', function(e){ e.preventDefault(); var x = formData(e.target); x.amount = n(x.amount); x.id = Date.now().toString(36); db.ledger.push(x); save(); e.target.reset(); alert('Ledger entry saved.'); });
-
-        function transactions(){
-            var list = [];
-            ['purchases','sales','expenses','ledger'].forEach(function(type){
-                db[type].forEach(function(x){ list.push(Object.assign({type:type}, x)); });
-            });
-            return list.sort(function(a,b){ return String(b.date||'').localeCompare(String(a.date||'')); });
-        }
-
-        function render(){
-            var sales = db.sales.reduce(function(s,x){return s+total(x);},0);
-            var purchases = db.purchases.reduce(function(s,x){return s+total(x);},0);
-            var expenses = db.expenses.reduce(function(s,x){return s+n(x.amount);},0);
-
-            el('m-sales').textContent = money(sales);
-            el('m-purchases').textContent = money(purchases);
-            el('m-expenses').textContent = money(expenses);
-            el('m-net').textContent = money(sales - purchases - expenses);
-
-            el('r-members').textContent = db.members.length;
-            el('r-purchases').textContent = db.purchases.length;
-            el('r-sales').textContent = db.sales.length;
-            el('r-products').textContent = db.products.length;
-
-            table('members-table', ['ID','Name','Phone','Village','Date','Notes','Action'], rows('members', db.members, function(x){
-                return '<td>'+esc(x.code)+'</td><td>'+esc(x.name)+'</td><td>'+esc(x.phone)+'</td><td>'+esc(x.village)+'</td><td>'+esc(x.date)+'</td><td>'+esc(x.notes)+'</td>';
-            }));
-
-            ['purchases','sales'].forEach(function(type){
-                table(type+'-table', ['Date','Party','Product','Qty','Rate','Total','Status','Ref','Action'], rows(type, db[type], function(x){
-                    return '<td>'+esc(x.date)+'</td><td>'+esc(x.party)+'</td><td>'+esc(x.item)+'</td><td>'+esc(x.qty)+' '+esc(x.unit)+'</td><td>'+money(x.rate)+'</td><td>'+money(total(x))+'</td><td>'+esc(x.status)+'</td><td>'+esc(x.ref)+'</td>';
-                }));
-            });
-
-            table('products-table', ['Code','Product','Quantity','Unit','Action'], rows('products', db.products, function(x){
-                return '<td>'+esc(x.code)+'</td><td>'+esc(x.name)+'</td><td>'+esc(x.qty)+'</td><td>'+esc(x.unit)+'</td>';
-            }));
-
-            table('expenses-table', ['Date','Category','Paid To','Amount','Mode','Ref','Action'], rows('expenses', db.expenses, function(x){
-                return '<td>'+esc(x.date)+'</td><td>'+esc(x.category)+'</td><td>'+esc(x.party)+'</td><td>'+money(x.amount)+'</td><td>'+esc(x.mode)+'</td><td>'+esc(x.ref)+'</td>';
-            }));
-
-            table('ledger-table', ['Date','Type','Account','Narration','Amount','Ref','Action'], rows('ledger', db.ledger, function(x){
-                return '<td>'+esc(x.date)+'</td><td>'+esc(x.kind)+'</td><td>'+esc(x.account)+'</td><td>'+esc(x.party)+'</td><td>'+money(x.amount)+'</td><td>'+esc(x.ref)+'</td>';
-            }));
-
-            var tx = transactions();
-            table('recent', ['Date','Type','Details','Amount'], tx.slice(0,8).map(function(x){
-                var val = (x.type === 'purchases' || x.type === 'sales') ? total(x) : x.amount;
-                return '<tr><td>'+esc(x.date)+'</td><td>'+esc(x.type)+'</td><td>'+esc(x.party || x.item || x.category || x.kind)+'</td><td>'+money(val)+'</td></tr>';
-            }));
-
-            table('all-table', ['Date','Type','Details','Amount','Status/Account'], tx.map(function(x){
-                var val = (x.type === 'purchases' || x.type === 'sales') ? total(x) : x.amount;
-                return '<tr><td>'+esc(x.date)+'</td><td>'+esc(x.type)+'</td><td>'+esc(x.party || x.item || x.category || x.kind)+'</td><td>'+money(val)+'</td><td>'+esc(x.status || x.account || x.mode)+'</td></tr>';
-            }));
-        }
-
-        function page(name){
-            document.querySelectorAll('.page').forEach(function(p){ p.classList.add('hidden'); });
-            var target = el('page-'+name);
-            if(target) target.classList.remove('hidden');
-            document.querySelectorAll('.navbtn').forEach(function(b){
-                b.classList.toggle('active', b.getAttribute('data-page') === name);
-            });
-            window.scrollTo(0,0);
-        }
-
-        document.querySelectorAll('.navbtn').forEach(function(b){
-            b.addEventListener('click', function(){ page(b.getAttribute('data-page')); });
-        });
-
-        function download(name, content, type){
-            var blob = new Blob([content], {type:type});
-            var url = URL.createObjectURL(blob);
-            var a = document.createElement('a');
-            a.href = url; a.download = name;
-            document.body.appendChild(a); a.click(); a.remove();
-            setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
-        }
-
-        function backup(){
-            download('jalmati-erp-backup.json', JSON.stringify({ company: 'JALMATI FARMERS PRODUCER COMPANY LIMITED', data: db }, null, 2), 'application/json');
-        }
-
-        function csv(){
-            var res = [['Type','Date','Party','Item','Quantity','Rate','Amount','Status']];
-            ['purchases','sales','expenses','ledger'].forEach(function(type){
-                db[type].forEach(function(x){
-                    res.push([type, x.date||'', x.party||'', x.item||x.category||x.kind||'', x.qty||'', x.rate||'', (type==='purchases'||type==='sales'?total(x):x.amount||''), x.status||x.account||x.mode||'']);
-                });
-            });
-            var out = res.map(function(r){ return r.map(function(v){ return '"' + String(v).replace(/"/g,'""') + '"'; }).join(','); }).join('\r\n');
-            download('jalmati-transactions.csv', '\ufeff'+out, 'text/csv;charset=utf-8');
-        }
-
-        function remove(type, id){
-            if(!confirm('Delete this record?')) return;
-            db[type] = db[type].filter(function(x){ return x.id !== id; });
-            save();
-        }
-
-        function clearData(){
-            if(!confirm('Delete all local records? Export a backup first.')) return;
-            db = blank();
-            save();
-        }
-
-        el('restore-file').addEventListener('change', function(e){
-            var file = e.target.files[0];
-            if(!file) return;
-            var reader = new FileReader();
-            reader.onload = function(){
-                try {
-                    var parsed = JSON.parse(reader.result);
-                    var data = parsed.data || parsed;
-                    if(!confirm('Replace current records with this backup?')) return;
-                    var fresh = blank();
-                    Object.keys(fresh).forEach(function(k){ if(Array.isArray(data[k])) fresh[k] = data[k]; });
-                    db = fresh; save(); alert('Backup restored successfully.');
-                } catch(err){ alert('Invalid backup file.'); }
-                e.target.value = '';
-            };
-            reader.readAsText(file);
-        });
-
-        window.JFP = { page: page, backup: backup, csv: csv, remove: remove, clear: clearData };
-        render();
-    })();
-    </script>
-</body>
-</html>
+                    <div class='panel'><h3>Current Stock Levels</h3><div id='products-table'></div></div>
