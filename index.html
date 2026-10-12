@@ -1,765 +1,147 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jalmati FPC - Advanced Institutional ERP Suite</title>
-    <style>
-        :root {
-            --green: #176b45;
-            --deep: #10452f;
-            --light: #eaf6ed;
-            --bg: #f3f7f4;
-            --line: #dce7df;
-            --text: #203328;
-            --muted: #718075;
-            --accent: #d97706;
-            --warn: #b91c1c;
-        }
-
-        * { box-sizing: border-box; }
-
-        body {
-            margin: 0;
-            background: var(--bg);
-            color: var(--text);
-            font: 14px Arial, sans-serif;
-        }
-
-        button, input, select { font: inherit; }
-
-        button {
-            border: 0;
-            border-radius: 8px;
-            background: var(--green);
-            color: white;
-            padding: 10px 14px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        button:hover { background: var(--deep); }
-
-        input, select {
-            width: 100%;
-            min-width: 0;
-            padding: 10px;
-            border: 1px solid var(--line);
-            border-radius: 7px;
-            background: white;
-        }
-
-        label {
-            display: block;
-            font-size: 12px;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .top {
-            background: var(--deep);
-            color: white;
-            padding: 10px 20px;
-            font-size: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .role-picker {
-            background: rgba(255,255,255,0.2);
-            border: 1px solid rgba(255,255,255,0.4);
-            color: white;
-            padding: 4px 8px;
-            border-radius: 6px;
-        }
-
-        header {
-            background: linear-gradient(120deg, #176b45, #25895a);
-            color: white;
-            padding: 22px;
-        }
-
-        header h1 { margin: 0 0 5px; font-size: clamp(20px, 3vw, 26px); }
-        header p { margin: 0; color: #e1f4e7; }
-
-        .wrap { max-width: 1450px; margin: auto; padding: 20px; }
-
-        /* Global Search & Universal Bar */
-        .action-bar {
-            display: grid;
-            grid-template-columns: 1fr auto;
-            gap: 12px;
-            margin-bottom: 16px;
-        }
-
-        .search-box input {
-            padding: 12px;
-            font-size: 14px;
-            border-radius: 9px;
-        }
-
-        .universal-btn {
-            background: var(--accent);
-            font-size: 14px;
-            padding: 0 20px;
-        }
-        .universal-btn:hover { background: #b45309; }
-
-        /* Alerts banner */
-        .alerts-panel {
-            background: #fffbeb;
-            border: 1px solid #fde68a;
-            border-radius: 10px;
-            padding: 12px 16px;
-            margin-bottom: 16px;
-        }
-        .alerts-panel h4 { margin: 0 0 6px; color: #92400e; font-size: 13px; }
-        .alert-item { font-size: 12px; color: #b45309; margin-bottom: 3px; }
-
-        .layout {
-            display: grid;
-            grid-template-columns: 240px minmax(0, 1fr);
-            gap: 17px;
-        }
-
-        nav, .panel, .metric {
-            background: white;
-            border: 1px solid var(--line);
-            border-radius: 12px;
-        }
-
-        nav {
-            padding: 10px;
-            height: max-content;
-            position: sticky;
-            top: 10px;
-        }
-
-        .navbtn {
-            display: block;
-            width: 100%;
-            text-align: left;
-            color: var(--text);
-            background: transparent;
-            margin: 3px 0;
-            padding: 10px;
-            border-radius: 6px;
-        }
-
-        .navbtn:hover, .navbtn.active {
-            color: var(--green);
-            background: var(--light);
-        }
-
-        .panel { padding: 17px; margin-bottom: 16px; }
-        .panel h3 { margin: 0 0 14px; display: flex; justify-content: space-between; align-items: center; }
-        .muted { color: var(--muted); }
-
-        .heading {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin: 0 0 17px;
-        }
-        .heading h2 { margin: 0; font-size: 22px; }
-
-        .cards {
-            display: grid;
-            grid-template-columns: repeat(4, minmax(0, 1fr));
-            gap: 12px;
-            margin-bottom: 17px;
-        }
-
-        .metric { padding: 15px; }
-        .metric small { color: var(--muted); }
-        .metric strong {
-            display: block;
-            font-size: clamp(18px, 2.2vw, 24px);
-            margin: 8px 0;
-            overflow-wrap: anywhere;
-        }
-
-        .formgrid {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 12px;
-        }
-        .field.full { grid-column: 1 / -1; }
-        .actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
-        .secondary { background: #eaf3ec; color: var(--green); }
-        .danger { background: var(--warn); }
-
-        .badge {
-            display: inline-block;
-            padding: 3px 8px;
-            border-radius: 5px;
-            font-size: 11px;
-            font-weight: bold;
-        }
-        .badge-draft { background: #e2e8f0; color: #475569; }
-        .badge-submitted { background: #fef3c7; color: #92400e; }
-        .badge-approved { background: #dcfce7; color: #166534; }
-        .badge-posted { background: #dbeafe; color: #1e40af; }
-
-        .hidden { display: none !important; }
-
-        .tablewrap { overflow-x: auto; }
-        table { border-collapse: collapse; width: 100%; min-width: 650px; }
-        th, td {
-            padding: 10px;
-            border-bottom: 1px solid #e9efea;
-            text-align: left;
-            font-size: 12px;
-        }
-        th { background: #f5f9f5; }
-        .empty { padding: 20px; text-align: center; color: var(--muted); }
-
-        /* Modal styling */
-        .modal-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.5);
-            display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 15px;
-        }
-        .modal {
-            background: white; border-radius: 12px; padding: 22px; width: 100%; max-width: 600px;
-            max-height: 90vh; overflow-y: auto;
-        }
-
-        .footer { padding: 20px; text-align: center; color: var(--muted); font-size: 12px; }
-
-        @media(max-width: 900px) {
-            .layout { grid-template-columns: 1fr; }
-            nav { position: static; display: flex; overflow-x: auto; gap: 4px; }
-            .navbtn { width: auto; flex: 0 0 auto; white-space: nowrap; }
-            .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-            .formgrid { grid-template-columns: 1fr; }
-            .action-bar { grid-template-columns: 1fr; }
-        }
-    </style>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#10452f">
+<title>Jalmati FPC | Producer Portal & Enterprise ERP</title>
+<style>
+:root{--green:#176b45;--deep:#10452f;--light:#eaf6ed;--bg:#f3f7f4;--line:#dce7df;--text:#203328;--muted:#718075;--gold:#d97706;--red:#a93131}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px Inter,Arial,sans-serif}button,input,select,textarea{font:inherit}button{border:0;border-radius:8px;background:var(--green);color:white;padding:10px 14px;font-weight:700;cursor:pointer}button:hover{background:var(--deep)}button.secondary{background:var(--light);color:var(--green)}button.danger{background:var(--red)}button.gold{background:var(--gold)}input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);border-radius:7px;background:#fff;color:var(--text)}label{display:block;font-size:12px;font-weight:700;margin-bottom:6px}.top{background:var(--deep);color:white;padding:10px 4%;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:12px}header{background:linear-gradient(120deg,#176b45,#25895a);color:white;padding:26px 4%}header h1{margin:0 0 8px;font-size:clamp(21px,3vw,31px)}header p{margin:0;color:#e1f4e7}.wrap{max-width:1450px;margin:auto;padding:20px}.notice{padding:12px 14px;background:#fff8e7;border:1px solid #ead6a4;border-radius:9px;line-height:1.55;margin-bottom:16px}.auth-shell{max-width:1050px;margin:20px auto;display:grid;grid-template-columns:1fr 1fr;gap:16px}.auth-card,.panel,.metric,nav{background:#fff;border:1px solid var(--line);border-radius:12px}.auth-card{padding:22px}.auth-card h2{margin-top:0}.field{margin:10px 0}.formgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.full{grid-column:1/-1}.layout{display:grid;grid-template-columns:230px minmax(0,1fr);gap:16px}nav{padding:10px;height:max-content;position:sticky;top:10px}.navbtn{display:block;width:100%;text-align:left;color:var(--text);background:transparent;margin:3px 0;padding:11px;border-radius:7px}.navbtn.active,.navbtn:hover{background:var(--light);color:var(--green)}.panel{padding:17px;margin-bottom:16px;min-width:0}.panel h3{margin:0 0 14px}.heading{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 16px}.heading h2{margin:0;font-size:23px}.muted,small{color:var(--muted)}.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:16px}.metric{padding:15px;min-width:0}.metric strong{display:block;font-size:clamp(19px,2.2vw,27px);margin:9px 0;overflow-wrap:anywhere}.metric small{font-size:12px}.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}.tablewrap{overflow:auto}table{border-collapse:collapse;width:100%;min-width:620px}th,td{padding:10px;border-bottom:1px solid #e9efea;text-align:left;font-size:12px;vertical-align:top}th{background:#f5f9f5}.empty{padding:20px;text-align:center;color:var(--muted)}.pill{display:inline-block;border-radius:99px;padding:4px 8px;font-size:11px;font-weight:700;background:#edf3ee;color:#315c40}.pill.pending{background:#fff1d6;color:#8a5400}.pill.approved{background:#dff5e5;color:#176b45}.pill.rejected{background:#fde7e7;color:#a93131}.hidden{display:none!important}.footer{text-align:center;padding:25px;color:var(--muted);font-size:12px}.userbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.userbar strong{color:white}.mini{font-size:11px}.toast{position:fixed;bottom:18px;right:18px;background:#173e2b;color:white;padding:13px 17px;border-radius:9px;box-shadow:0 6px 25px #0002;z-index:99;max-width:90vw}.kicker{color:var(--green);font-weight:800;font-size:12px;text-transform:uppercase;letter-spacing:.08em}.hero-box{background:linear-gradient(130deg,#eff9f1,#fff);border:1px solid var(--line);border-radius:12px;padding:18px;margin-bottom:16px}.role-chip{font-size:11px;background:#ffffff25;border:1px solid #ffffff55;padding:5px 9px;border-radius:99px}
+@media(max-width:900px){.layout{grid-template-columns:1fr}nav{position:static;display:flex;overflow:auto;gap:4px}.navbtn{width:auto;flex:0 0 auto;white-space:nowrap}.cards{grid-template-columns:repeat(2,minmax(0,1fr))}.grid2,.auth-shell{grid-template-columns:1fr}}
+@media(max-width:520px){.wrap{padding:12px}.formgrid{grid-template-columns:1fr}.full{grid-column:auto}.cards{gap:8px}.metric{padding:11px}.auth-card{padding:16px}}
+</style>
 </head>
 <body>
-    <div class='top'>
-        <div>🌱 JALMATI FPC | Advanced Institutional ERP Suite (CIN: U01611WR2026PTC293091)</div>
-        <div style="display:flex; align-items:center; gap:8px;">
-            <span>Role:</span>
-            <select id='active-role' class='role-picker' onchange='JFP.setRole(this.value)'>
-                <option value='admin'>Admin (Full Control)</option>
-                <option value='accountant'>Accountant (Post &amp; Periods)</option>
-                <option value='procurement'>Procurement Operator</option>
-                <option value='sales'>Sales Operator</option>
-                <option value='auditor'>Auditor (Read-Only)</option>
-            </select>
-        </div>
-    </div>
-
-    <header>
-        <h1>Jalmati Farmers Producer Company Limited</h1>
-        <p>Bhandara, Murshidabad, West Bengal • Universal Search, Approvals &amp; Stock Guardrails</p>
-    </header>
-
-    <div class='wrap'>
-        <!-- Universal Action & Global Search Bar -->
-        <div class='action-bar'>
-            <div class='search-box'>
-                <input id='global-search' type='text' placeholder='🔍 Global Search: Find any member, product, invoice, or transaction...' oninput='JFP.search(this.value)'>
-            </div>
-            <button class='universal-btn' onclick='JFP.openUniversalModal()'>＋ Universal Add</button>
-        </div>
-
-        <!-- Smart Alerts Banner -->
-        <div class='alerts-panel' id='alerts-banner'>
-            <h4>⚠️ System Alerts &amp; Actionable Queue</h4>
-            <div id='alerts-list'><div class='alert-item'>No immediate alerts. Stock levels optimal.</div></div>
-        </div>
-
-        <div class='layout'>
-            <nav>
-                <button class='navbtn active' data-page='dashboard'>▦ Dashboard</button>
-                <button class='navbtn' data-page='members'>♙ Members &amp; Documents</button>
-                <button class='navbtn' data-page='purchases'>↓ Purchases &amp; Inwards</button>
-                <button class='navbtn' data-page='sales'>↑ Sales &amp; Invoicing</button>
-                <button class='navbtn' data-page='products'>▤ Stock &amp; Inventory</button>
-                <button class='navbtn' data-page='expenses'>₹ Operational Expenses</button>
-                <button class='navbtn' data-page='ledger'>⇄ Ledger &amp; Periods</button>
-                <button class='navbtn' data-page='approvals'>🛡 Approvals Queue <span id='approval-badge' class='badge badge-submitted'>0</span></button>
-                <button class='navbtn' data-page='reports'>▥ Reports &amp; Exports</button>
-                <button class='navbtn' data-page='settings'>⚙ Settings &amp; Security</button>
-            </nav>
-
-            <main>
-                <!-- Dashboard -->
-                <section class='page' id='page-dashboard'>
-                    <div class='heading'>
-                        <h2>Executive Dashboard</h2>
-                        <button onclick='JFP.backup()'>Export Backup</button>
-                    </div>
-                    <div class='cards'>
-                        <div class='metric'><small>Total Sales (Posted)</small><strong id='m-sales'>₹0.00</strong></div>
-                        <div class='metric'><small>Total Purchases</small><strong id='m-purchases'>₹0.00</strong></div>
-                        <div class='metric'><small>Total Expenses</small><strong id='m-expenses'>₹0.00</strong></div>
-                        <div class='metric'><small>Net Surplus</small><strong id='m-net'>₹0.00</strong></div>
-                    </div>
-                    <div class='panel'>
-                        <h3>Global Search Results <span id='search-count' class='muted' style='font-size:12px;'></span></h3>
-                        <div id='search-results-box'><p class='muted'>Type in the global search bar above to query members, crops, or invoices instantly.</p></div>
-                    </div>
-                    <div class='panel'>
-                        <h3>Recent Posted Transactions</h3>
-                        <div id='recent-table'></div>
-                    </div>
-                </section>
-
-                <!-- Members Section -->
-                <section class='page hidden' id='page-members'>
-                    <div class='heading'><h2>Farmer Members &amp; Document Centre</h2></div>
-                    <div class='panel'>
-                        <h3>Register Member &amp; Attach Document</h3>
-                        <form id='member-form' onsubmit='JFP.addMember(event)'>
-                            <div class='formgrid'>
-                                <div class='field'><label>Full Name *</label><input name='name' required></div>
-                                <div class='field'><label>Member ID</label><input name='code' placeholder='JFP-MEM-001'></div>
-                                <div class='field'><label>Phone</label><input name='phone'></div>
-                                <div class='field'><label>Village</label><input name='village' value='Bhandara, Murshidabad'></div>
-                                <div class='field'><label>Land Holding (Acres)</label><input name='land' type='number' step='0.1' value='1.0'></div>
-                                <div class='field'><label>Upload KYC / Aadhaar / Land Deed (Simulated)</label><input name='doc' type='file'></div>
-                            </div>
-                            <div class='actions'><button type='submit'>Save Member</button></div>
-                        </form>
-                    </div>
-                    <div class='panel'><h3>Registered Members</h3><div id='members-table'></div></div>
-                </section>
-
-                <!-- Purchases Section -->
-                <section class='page hidden' id='page-purchases'>
-                    <div class='heading'><h2>Purchases &amp; Inward Hub</h2></div>
-                    <div class='panel'>
-                        <h3>Record Purchase (Enters Approval Flow)</h3>
-                        <form id='purchase-form' onsubmit='JFP.addTx("purchases", event)'>
-                            <div class='formgrid'>
-                                <div class='field'><label>Date *</label><input name='date' type='date' required></div>
-                                <div class='field'><label>Supplier / Farmer *</label><input name='party' required></div>
-                                <div class='field'><label>Crop / Item *</label><input name='item' required placeholder='Raw Paddy'></div>
-                                <div class='field'><label>Quantity *</label><input name='qty' type='number' min='0' step='0.001' required></div>
-                                <div class='field'><label>Unit</label><select name='unit'><option>kg</option><option>quintal</option><option>tonne</option><option>bag</option></select></div>
-                                <div class='field'><label>Rate per Unit (₹) *</label><input name='rate' type='number' min='0' step='0.01' required></div>
-                                <div class='field'><label>Payment Status</label><select name='status'><option>Paid</option><option>Pending</option></select></div>
-                                <div class='field'><label>Receipt Ref / Doc</label><input name='ref'></div>
-                            </div>
-                            <div class='actions'><button type='submit'>Submit for Approval</button></div>
-                        </form>
-                    </div>
-                    <div class='panel'><h3>Purchase Register</h3><div id='purchases-table'></div></div>
-                </section>
-
-                <!-- Sales Section -->
-                <section class='page hidden' id='page-sales'>
-                    <div class='heading'><h2>Sales &amp; Invoicing (Smart Stock Protected)</h2></div>
-                    <div class='panel'>
-                        <h3>Record Sale (Validates Available Stock)</h3>
-                        <form id='sale-form' onsubmit='JFP.addSale(event)'>
-                            <div class='formgrid'>
-                                <div class='field'><label>Date *</label><input name='date' type='date' required></div>
-                                <div class='field'><label>Customer *</label><input name='party' required></div>
-                                <div class='field'><label>Crop / Product *</label><input name='item' required></div>
-                                <div class='field'><label>Quantity *</label><input name='qty' type='number' min='0' step='0.001' required></div>
-                                <div class='field'><label>Unit</label><select name='unit'><option>kg</option><option>quintal</option><option>tonne</option><option>bag</option></select></div>
-                                <div class='field'><label>Rate (₹) *</label><input name='rate' type='number' min='0' step='0.01' required></div>
-                                <div class='field'><label>GST Rate (%)</label><select name='gst'><option value='0'>0% (Agri)</option><option value='5'>5%</option><option value='18' selected>18% Standard</option></select></div>
-                                <div class='field'><label>Payment Status</label><select name='status'><option>Received</option><option>Pending</option></select></div>
-                            </div>
-                            <div class='actions'><button type='submit'>Submit Sale for Approval</button></div>
-                        </form>
-                    </div>
-                    <div class='panel'><h3>Sales Register</h3><div id='sales-table'></div></div>
-                </section>
-
-                <!-- Products Section -->
-                <section class='page hidden' id='page-products'>
-                    <div class='heading'><h2>Stock &amp; Inventory Center</h2></div>
-                    <div class='panel'>
-                        <h3>Add Inventory Item</h3>
-                        <form id='product-form' onsubmit='JFP.addProduct(event)'>
-                            <div class='formgrid'>
-                                <div class='field'><label>Product Name *</label><input name='name' required></div>
-                                <div class='field'><label>Code</label><input name='code' placeholder='PRD-01'></div>
-                                <div class='field'><label>Initial Quantity</label><input name='qty' type='number' step='0.001' value='0'></div>
-                                <div class='field'><label>Unit</label><select name='unit'><option>kg</option><option>quintal</option><option>tonne</option></select></div>
-                            </div>
-                            <div class='actions'><button type='submit'>Save Product</button></div>
-                        </form>
-                    </div>
-                    <div class='panel'><h3>Live Stock Levels</h3><div id='products-table'></div></div>
-                </section>
-
-                <!-- Expenses Section -->
-                <section class='page hidden' id='page-expenses'>
-                    <div class='heading'><h2>Operational Expenses</h2></div>
-                    <div class='panel'>
-                        <h3>Record Expense</h3>
-                        <form id='expense-form' onsubmit='JFP.addTx("expenses", event)'>
-                            <div class='formgrid'>
-                                <div class='field'><label>Date *</label><input name='date' type='date' required></div>
-                                <div class='field'><label>Category</label><select name='category'><option>Transport &amp; Freight</option><option>Labour &amp; Handling</option><option>Office &amp; Utilities</option><option>Other</option></select></div>
-                                <div class='field'><label>Paid To</label><input name='party'></div>
-                                <div class='field'><label>Amount (₹) *</label><input name='amount' type='number' min='0' step='0.01' required></div>
-                                <div class='field'><label>Payment Mode</label><select name='mode'><option>Cash</option><option>Bank Transfer</option><option>UPI</option></select></div>
-                                <div class='field'><label>Voucher Ref</label><input name='ref'></div>
-                            </div>
-                            <div class='actions'><button type='submit'>Submit Expense</button></div>
-                        </form>
-                    </div>
-                    <div class='panel'><h3>Expense Register</h3><div id='expenses-table'></div></div>
-                </section>
-
-                <!-- Ledger & Period Controls -->
-                <section class='page hidden' id='page-ledger'>
-                    <div class='heading'>
-                        <h2>Cashbook, Bank Ledger &amp; Period Locking</h2>
-                        <button class='accent-btn' onclick='JFP.togglePeriodLock()'>🔒 <span id='lock-btn-text'>Lock Current Accounting Period</span></button>
-                    </div>
-                    <div class='notice' id='period-notice'><strong>Period Status:</strong> Open. Transactions can be edited or posted normally.</div>
-                    <div class='panel'>
-                        <h3>Record Receipt / Payment</h3>
-                        <form id='ledger-form' onsubmit='JFP.addTx("ledger", event)'>
-                            <div class='formgrid'>
-                                <div class='field'><label>Date *</label><input name='date' type='date' required></div>
-                                <div class='field'><label>Type</label><select name='kind'><option>Receipt</option><option>Payment</option></select></div>
-                                <div class='field'><label>Account</label><select name='account'><option>Cash in Hand</option><option>Bank Account</option></select></div>
-                                <div class='field'><label>Amount (₹) *</label><input name='amount' type='number' min='0' step='0.01' required></div>
-                                <div class='field'><label>Narration / Party *</label><input name='party' required></div>
-                                <div class='field'><label>Ref</label><input name='ref'></div>
-                            </div>
-                            <div class='actions'><button type='submit'>Submit Entry</button></div>
-                        </form>
-                    </div>
-                    <div class='panel'><h3>Ledger Register</h3><div id='ledger-table'></div></div>
-                </section>
-
-                <!-- Approvals Queue -->
-                <section class='page hidden' id='page-approvals'>
-                    <div class='heading'><h2>Multi-Tier Approval Workflow Queue</h2><span class='muted'>Approve submitted draft vouchers to post into financial books</span></div>
-                    <div class='panel'>
-                        <h3>Pending Approvals</h3>
-                        <div id='approvals-table'></div>
-                    </div>
-                </section>
-
-                <!-- Reports Section -->
-                <section class='page hidden' id='page-reports'>
-                    <div class='heading'><h2>Reports &amp; Data Portability</h2><button onclick='JFP.csv()'>Export CSV Reports</button></div>
-                    <div class='cards'>
-                        <div class='metric'><small>Total Members</small><strong id='r-members'>0</strong></div>
-                        <div class='metric'><small>Products</small><strong id='r-products'>0</strong></div>
-                        <div class='metric'><small>Posted Vouchers</small><strong id='r-posted'>0</strong></div>
-                    </div>
-                    <div class='panel'><h3>All Posted Transactions</h3><div id='all-table'></div></div>
-                </section>
-
-                <!-- Settings -->
-                <section class='page hidden' id='page-settings'>
-                    <div class='heading'><h2>Backup, Restore &amp; Permissions</h2></div>
-                    <div class='panel'>
-                        <h3>Validated Backup &amp; Restore</h3>
-                        <div class='actions'>
-                            <button onclick='JFP.backup()'>Download JSON Backup</button>
-                            <button class='secondary' onclick='JFP.csv()'>Export CSV</button>
-                        </div>
-                        <p style='margin-top:15px;'><label for='restore-file'>Restore JSON Backup (Validated)</label><input id='restore-file' type='file' accept='.json,application/json' onchange='JFP.restore(event)'></p>
-                    </div>
-                    <div class='panel'>
-                        <h3>Danger Zone</h3>
-                        <button class='danger' onclick='JFP.clear()'>Clear All Local Records</button>
-                    </div>
-                </section>
-            </main>
-        </div>
-        <div class='footer'>Jalmati Farmers Producer Company Limited · Institutional ERP</div>
-    </div>
-
-    <!-- Universal Add Modal -->
-    <div class='modal-overlay hidden' id='universal-modal'>
-        <div class='modal'>
-            <h3>Universal Add Record <button style='background:none; color:var(--text); font-size:16px;' onclick='JFP.closeUniversalModal()'>✕</button></h3>
-            <p class='muted'>Select module type to create a record from anywhere in the system:</p>
-            <div style='margin-bottom:12px;'>
-                <label>Select Module</label>
-                <select id='uni-type' onchange='JFP.switchUniversalForm(this.value)'>
-                    <option value='member'>Farmer Member</option>
-                    <option value='purchases'>Purchase (Inward)</option>
-                    <option value='sales'>Sale (Outward)</option>
-                    <option value='expenses'>Expense Voucher</option>
-                    <option value='ledger'>Cashbook Receipt/Payment</option>
-                </select>
-            </div>
-            <div id='uni-form-container'></div>
-        </div>
-    </div>
-
-    <script>
-    (function(){
-        'use strict';
-        var KEY = 'jalmati_erp_v5';
-        var blank = function(){ return { members:[], purchases:[], sales:[], products:[], expenses:[], ledger:[], approvals:[], locked:false, role:'admin' }; };
-        var db = blank();
-        try { var stored = localStorage.getItem(KEY); if (stored) db = Object.assign(blank(), JSON.parse(stored)); } catch(e){}
-
-        function el(id){ return document.getElementById(id); }
-        function esc(v){ return String(v == null ? '' : v).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
-        function n(v){ return Number(v) || 0; }
-        function money(v){ return '₹' + n(v).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2}); }
-
-        function save(){
-            try { localStorage.setItem(KEY, JSON.stringify(db)); } catch(e){}
-            render();
-        }
-
-        function getStock(name){
-            var clean = String(name).trim().toLowerCase();
-            var found = db.products.find(function(p){ return p.name.trim().toLowerCase() === clean; });
-            return found ? n(found.qty) : 0;
-        }
-
-        function updateStock(name, qtyChange){
-            var clean = String(name).trim().toLowerCase();
-            var found = db.products.find(function(p){ return p.name.trim().toLowerCase() === clean; });
-            if(found){
-                found.qty = n(found.qty) + qtyChange;
-            } else if(qtyChange > 0){
-                db.products.push({ id: Date.now().toString(36), name: name, code: 'PRD-'+Math.floor(100+Math.random()*900), qty: qtyChange, unit: 'kg' });
-            }
-        }
-
-        // Role & Permission Checks
-        window.JFP = {
-            setRole: function(r){ db.role = r; save(); alert('Active role switched to: ' + r.toUpperCase()); },
-            togglePeriodLock: function(){
-                if(db.role !== 'admin' && db.role !== 'accountant'){ alert('Permission Denied: Only Admin or Accountant can lock/unlock periods.'); return; }
-                db.locked = !db.locked;
-                save();
-                alert(db.locked ? 'Accounting period LOCKED.' : 'Accounting period UNLOCKED.');
-            },
-            openUniversalModal: function(){ el('universal-modal').classList.remove('hidden'); JFP.switchUniversalForm('member'); },
-            closeUniversalModal: function(){ el('universal-modal').classList.add('hidden'); },
-            switchUniversalForm: function(type){
-                var box = el('uni-form-container');
-                if(type === 'member'){
-                    box.innerHTML = `<form onsubmit='JFP.uniSubmit("members", event)'><div class='formgrid'><div class='field'><label>Name *</label><input name='name' required></div><div class='field'><label>Village</label><input name='village' value='Bhandara'></div><div class='field'><label>Phone</label><input name='phone'></div><div class='field'><label>Land (Acres)</label><input name='land' type='number' value='1'></div></div><div class='actions'><button type='submit'>Save Member</button></div></form>`;
-                } else if(type === 'purchases' || type === 'sales' || type === 'expenses' || type === 'ledger'){
-                    box.innerHTML = `<form onsubmit='JFP.uniSubmit("${type}", event)'><div class='formgrid'><div class='field'><label>Date *</label><input name='date' type='date' required></div><div class='field'><label>Party / Detail *</label><input name='party' required></div><div class='field'><label>Amount / Qty *</label><input name='amount' type='number' step='0.01' required></div><div class='field'><label>Notes / Ref</label><input name='ref'></div></div><div class='actions'><button type='submit'>Submit Entry for Approval</button></div></form>`;
-                }
-            },
-            uniSubmit: function(type, e){
-                e.preventDefault();
-                if(db.locked){ alert('Error: Accounting period is locked. Record corrections via adjustments instead.'); return; }
-                var data = Object.fromEntries(new FormData(e.target).entries());
-                data.id = Date.now().toString(36);
-                data.status = 'Submitted';
-                db.approvals.push({ type: type, data: data });
-                save(); JFP.closeUniversalModal(); alert('Submitted to Approval Queue.');
-            },
-            addMember: function(e){
-                e.preventDefault(); var x = Object.fromEntries(new FormData(e.target).entries());
-                x.id = Date.now().toString(36); db.members.push(x); save(); e.target.reset(); alert('Member saved.');
-            },
-            addProduct: function(e){
-                e.preventDefault(); var x = Object.fromEntries(new FormData(e.target).entries());
-                x.qty = n(x.qty); x.id = Date.now().toString(36); db.products.push(x); save(); e.target.reset(); alert('Product saved.');
-            },
-            addTx: function(type, e){
-                e.preventDefault();
-                if(db.locked){ alert('Error: Accounting period is locked.'); return; }
-                var x = Object.fromEntries(new FormData(e.target).entries());
-                x.id = Date.now().toString(36); x.status = 'Submitted';
-                db.approvals.push({ type: type, data: x });
-                save(); e.target.reset(); alert('Transaction submitted for approval workflow.');
-            },
-            addSale: function(e){
-                e.preventDefault();
-                if(db.locked){ alert('Error: Accounting period is locked.'); return; }
-                var x = Object.fromEntries(new FormData(e.target).entries());
-                x.qty = n(x.qty); x.rate = n(x.rate);
-                
-                // Smart stock control safeguard
-                var available = getStock(x.item);
-                if(x.qty > available){
-                    alert('STOCKS ERROR: Cannot process sale. Requested quantity ('+x.qty+') exceeds available Murshidabad stock ('+available+').');
-                    return;
-                }
-
-                x.id = Date.now().toString(36); x.status = 'Submitted';
-                db.approvals.push({ type: 'sales', data: x });
-                save(); e.target.reset(); alert('Sale submitted to approval workflow with stock reserved.');
-            },
-            approveItem: function(idx){
-                if(db.role !== 'admin' && db.role !== 'accountant'){ alert('Permission Denied: Only Admin or Accountant can approve vouchers.'); return; }
-                var item = db.approvals.splice(idx, 1)[0];
-                item.data.status = 'Posted';
-                if(item.type === 'purchases'){
-                    db.purchases.push(item.data);
-                    updateStock(item.data.item, n(item.data.qty));
-                } else if(item.type === 'sales'){
-                    db.sales.push(item.data);
-                    updateStock(item.data.item, -n(item.data.qty));
-                } else if(item.type === 'expenses'){
-                    db.expenses.push(item.data);
-                } else if(item.type === 'ledger'){
-                    db.ledger.push(item.data);
-                } else if(item.type === 'members'){
-                    db.members.push(item.data);
-                }
-                save(); alert('Voucher approved and posted to general ledger.');
-            },
-            rejectItem: function(idx){
-                if(db.role !== 'admin' && db.role !== 'accountant'){ alert('Permission Denied.'); return; }
-                db.approvals.splice(idx, 1);
-                save(); alert('Voucher rejected and removed from queue.');
-            },
-            search: function(q){
-                q = q.trim().toLowerCase();
-                var box = el('search-results-box');
-                var countBox = el('search-count');
-                if(!q){ box.innerHTML = `<p class='muted'>Type in the global search bar above to query members, crops, or invoices instantly.</p>`; countBox.textContent = ''; return; }
-                
-                var results = [];
-                db.members.forEach(function(m){ if(JSON.stringify(m).toLowerCase().includes(q)) results.push('Member: ' + m.name + ' (' + m.village + ')'); });
-                db.products.forEach(function(p){ if(JSON.stringify(p).toLowerCase().includes(q)) results.push('Product: ' + p.name + ' - Stock: ' + p.qty + ' ' + p.unit); });
-                db.sales.forEach(function(s){ if(JSON.stringify(s).toLowerCase().includes(q)) results.push('Sale: ' + s.party + ' - ' + s.item + ' (' + s.qty + ')'); });
-                db.purchases.forEach(function(p){ if(JSON.stringify(p).toLowerCase().includes(q)) results.push('Purchase: ' + p.party + ' - ' + p.item); });
-
-                countBox.textContent = '(' + results.length + ' matches found)';
-                if(!results.length){ box.innerHTML = `<div class='empty'>No matching records found for "${esc(q)}"</div>`; return; }
-                box.innerHTML = '<ul>' + results.map(function(r){ return '<li>'+esc(r)+'</li>'; }).join('') + '</ul>';
-            },
-            backup: function(){
-                var blob = new Blob([JSON.stringify({ company: 'JALMATI FPC', cin: 'U01611WR2026PTC293091', data: db }, null, 2)], {type:'application/json'});
-                var url = URL.createObjectURL(blob); var a = document.createElement('a'); a.href = url; a.download = 'jalmati-institutional-backup.json';
-                document.body.appendChild(a); a.click(); a.remove();
-            },
-            restore: function(e){
-                var file = e.target.files[0]; if(!file) return;
-                var reader = new FileReader();
-                reader.onload = function(){
-                    try {
-                        var parsed = JSON.parse(reader.result); var data = parsed.data || parsed;
-                        if(!confirm('Replace current records with this backup?')) return;
-                        db = Object.assign(blank(), data); save(); alert('Backup restored successfully.');
-                    } catch(err){ alert('Invalid backup file format.'); }
-                    e.target.value = '';
-                };
-                reader.readAsText(file);
-            },
-            csv: function(){
-                var res = [['Type','Date','Party/Member','Item/Category','Quantity','Amount/Rate','Status']];
-                db.sales.forEach(function(x){ res.push(['Sale', x.date, x.party, x.item, x.qty+' '+x.unit, x.rate, x.status]); });
-                db.purchases.forEach(function(x){ res.push(['Purchase', x.date, x.party, x.item, x.qty+' '+x.unit, x.rate, x.status]); });
-                var out = res.map(function(r){ return r.map(function(v){ return '"' + String(v).replace(/"/g,'""') + '"'; }).join(','); }).join('\r\n');
-                var blob = new Blob(['\ufeff'+out], {type:'text/csv;charset=utf-8'});
-                var url = URL.createObjectURL(blob); var a = document.createElement('a'); a.href = url; a.download = 'jalmati-report.csv';
-                document.body.appendChild(a); a.click(); a.remove();
-            },
-            clear: function(){
-                if(!confirm('Delete all records? Export backup first.')) return;
-                db = blank(); save();
-            }
-        };
-
-        function table(id, headers, rows){
-            var target = el(id);
-            if(!rows.length){ target.innerHTML = '<div class="empty">No records yet.</div>'; return; }
-            target.innerHTML = '<div class="tablewrap"><table><thead><tr>' + headers.map(function(h){ return '<th>'+h+'</th>'; }).join('') + '</tr></thead><tbody>' + rows.join('') + '</tbody></table></div>';
-        }
-
-        function render(){
-            // Metrics computation
-            var salesSum = db.sales.reduce(function(s,x){return s + (n(x.qty)*n(x.rate));},0);
-            var purchasesSum = db.purchases.reduce(function(s,x){return s + (n(x.qty)*n(x.rate));},0);
-            var expensesSum = db.expenses.reduce(function(s,x){return s + n(x.amount);},0);
-
-            el('m-sales').textContent = money(salesSum);
-            el('m-purchases').textContent = money(purchasesSum);
-            el('m-expenses').textContent = money(expensesSum);
-            el('m-net').textContent = money(salesSum - purchasesSum - expensesSum);
-
-            el('r-members').textContent = db.members.length;
-            el('r-products').textContent = db.products.length;
-            el('r-posted').textContent = db.sales.length + db.purchases.length + db.expenses.length;
-
-            el('approval-badge').textContent = db.approvals.length;
-
-            // Period lock UI update
-            if(db.locked){
-                el('period-notice').innerHTML = '<strong>Period Status: LOCKED.</strong> Historical records are immutable; record corrections via journal adjustments.';
-                el('lock-btn-text').textContent = 'Unlock Period';
-            } else {
-                el('period-notice').innerHTML = '<strong>Period Status: Open.</strong> Transactions can be edited or posted normally.';
-                el('lock-btn-text').textContent = 'Lock Current Accounting Period';
-            }
-
-            // Alerts Generator
-            var alertHtml = '';
-            db.products.forEach(function(p){
-                if(n(p.qty) <= 10) alertHtml += '<div class="alert-item">⚠️ Low Stock Warning: <strong>'+esc(p.name)+'</strong> is down to '+p.qty+' '+p.unit+'!</div>';
-            });
-            if(db.approvals.length > 0) alertHtml += '<div class="alert-item">🛡 Pending Approvals: <strong>'+db.approvals.length+' vouchers</strong> waiting in queue for review.</div>';
-            if(!alertHtml) alertHtml = '<div class="alert-item">✅ All stock levels optimal and approval queues clear.</div>';
-            el('alerts-list').innerHTML = alertHtml;
-
-            // Tables
-            table('members-table', ['ID','Name','Phone','Village','Land','Doc Status'], db.members.map(function(x){
-                return '<tr><td>'+esc(x.code)+'</td><td>'+esc(x.name)+'</td><td>'+esc(x.phone)+'</td><td>'+esc(x.village)+'</td><td>'+esc(x.land)+' Acres</td><td><span class="badge badge-posted">Verified</span></td></tr>';
-            }));
-
-            table('purchases-table', ['Date','Supplier','Item','Qty','Rate','Status'], db.purchases.map(function(x){
-                return '<tr><td>'+esc(x.date)+'</td><td>'+esc(x.party)+'</td><td>'+esc(x.item)+'</td><td>'+esc(x.qty)+' '+esc(x.unit)+'</td><td>'+money(x.rate)+'</td><td><span class="badge badge-posted">'+esc(x.status)+'</span></td></tr>';
-            }));
-
-            table('sales-table', ['Date','Customer','Item','Qty','Rate','Status'], db.sales.map(function(x){
-                return '<tr><td>'+esc(x.date)+'</td><td>'+esc(x.party)+'</td><td>'+esc(x.item)+'</td><td>'+esc(x.qty)+' '+esc(x.unit)+'</td><td>'+money(x.rate)+'</td><td><span class="badge badge-posted">'+esc(x.status)+'</span></td></tr>';
-            }));
-
-            table('products-table', ['Code','Product','Stock Qty','Unit'], db.products.map(function(x){
-                return '<tr><td>'+esc(x.code)+'</td><td>'+esc(x.name)+'</td><td><strong>'+esc(x.qty)+'</strong></td><td>'+esc(x.unit)+'</td></tr>';
-            }));
-
-            table('expenses-table', ['Date','Category','Paid To','Amount','Mode'], db.expenses.map(function(x){
-                return '<tr><td>'+esc(x.date)+'</td><td>'+esc(x.category)+'</td><td>'+esc(x.party)+'</td><td>'+money(x.amount)+'</td><td>'+esc(x.mode)+'</td></tr>';
-            }));
-
-            table('ledger-table', ['Date','Type','Account','Narration','Amount'], db.ledger.map(function(x){
-                return '<tr><td>'+esc(x.date)+'</td><td>'+esc(x.kind)+'</td><td>'+esc(x.account)+'</td><td>'+esc(x.party)+'</td><td>'+money(x.amount)+'</td></tr>';
-            }));
-
-            table('approvals-table', ['Module Type','Party / Details','Amount / Qty','Submitted Data','Action'], db.approvals.map(function(item, idx){
-                return '<tr><td><strong>'+esc(item.type.toUpperCase())+'</strong></td><td>'+esc(item.data.party || item.data.name || '-')+'</td><td>'+esc(item.data.amount || item.data.qty || '-')+'</td><td><small>'+esc(JSON.stringify(item.data))+'</small></td><td><button onclick="JFP.approveItem('+idx+')">Approve &amp; Post</button> <button class="danger" onclick="JFP.rejectItem('+idx+')">Reject</button></td></tr>';
-            }));
-
-            table('recent-table', ['Date','Type','Details','Status'], db.sales.concat(db.purchases).slice(0,6).map(function(x){
-                return '<tr><td>'+esc(x.date)+'</td><td>Transaction</td><td>'+esc(x.party)+' - '+esc(x.item)+'</td><td><span class="badge badge-posted">Posted</span></td></tr>';
-            }));
-
-            table('all-table', ['Date','Type','Party','Item','Qty','Status'], db.sales.concat(db.purchases).map(function(x){
-                return '<tr><td>'+esc(x.date)+'</td><td>Record</td><td>'+esc(x.party)+'</td><td>'+esc(x.item)+'</td><td>'+esc(x.qty)+'</td><td><span class="badge badge-posted">Posted</span></td></tr>';
-            }));
-        }
-
-        // Navigation switcher
-        document.querySelectorAll('.navbtn').forEach(function(b){
-            b.addEventListener('click', function(){
-                document.querySelectorAll('.page').forEach(function(p){ p.classList.add('hidden'); });
-                var target = el('page-'+b.getAttribute('data-page'));
-                if(target) target.classList.remove('hidden');
-                document.querySelectorAll('.navbtn').forEach(function(n){ n.classList.remove('active'); });
-                b.classList.add('active');
-                window.scrollTo(0,0);
-            });
-        });
-
-        render();
-    })();
-    </script>
-</body>
-</html>
+<div class="top"><div>🌱 JALMATI FPC · Producer Portal & Enterprise ERP</div><div>Murshidabad Hub · West Bengal</div></div>
+<header><h1>JALMATI FARMERS PRODUCER COMPANY LIMITED</h1><p>One platform for producers, procurement, sales, stock, approvals and accounts.</p></header>
+<div class="wrap">
+<div class="notice"><strong>Two secure workspaces.</strong> Producers can manage their own profile and requests. Authorized administrators can access the ERP suite, review registrations, approve transactions and manage records.</div>
+<section id="authView">
+ <div class="auth-shell">
+  <div class="auth-card"><div class="kicker">Producer access</div><h2>Producer Registration / Log In</h2><p class="muted">Register as a producer or sign in to your producer workspace.</p>
+   <div class="actions"><button id="showLogin">Producer Log In</button><button id="showRegister" class="secondary">New Registration</button></div>
+   <form id="producerLogin" class="field"><div class="field"><label>Mobile number or Producer ID</label><input name="identity" required autocomplete="username" placeholder="Mobile number / Producer ID"></div><div class="field"><label>Password</label><input name="password" type="password" required autocomplete="current-password"></div><button type="submit">Log In to Producer Portal</button></form>
+   <form id="producerRegister" class="hidden"><div class="formgrid">
+    <div class="field"><label>Full name *</label><input name="name" required></div><div class="field"><label>Mobile number *</label><input name="phone" required inputmode="tel" pattern="[0-9+\-\s]{8,16}"></div>
+    <div class="field"><label>Village / Address *</label><input name="village" required></div><div class="field"><label>Email (optional)</label><input name="email" type="email"></div>
+    <div class="field"><label>Create password *</label><input name="password" type="password" required minlength="8" autocomplete="new-password"></div><div class="field"><label>Bank / account note (optional)</label><input name="bank" placeholder="Do not enter full sensitive bank credentials here"></div>
+    <div class="field full"><label>Additional information (optional)</label><textarea name="notes" rows="2"></textarea></div>
+   </div><p class="muted mini">Registration remains pending until approved by the company. Use a unique password.</p><button type="submit">Submit Registration</button></form>
+  </div>
+  <div class="auth-card"><div class="kicker">Authorized staff</div><h2>Admin / ERP Log In</h2><p class="muted">Administrator access is separate from producer access.</p>
+   <form id="adminLogin"><div class="field"><label>Admin username</label><input name="username" required autocomplete="username" placeholder="Configured administrator username"></div><div class="field"><label>Password</label><input name="password" type="password" required autocomplete="current-password"></div><button type="submit">Open Admin ERP Suite</button></form>
+   <div class="notice" style="margin-top:16px;margin-bottom:0"><strong>Deployment note:</strong> this downloadable build is a front-end demonstration using this browser's local storage. Do not enter real producer passwords or financial/private records until a server-side authentication and database backend is connected.</div>
+  </div>
+ </div>
+</section>
+<section id="appView" class="hidden">
+ <div class="heading"><div><h2 id="workspaceTitle">Workspace</h2><span id="workspaceSub" class="muted">Secure workspace</span></div><div class="userbar"><span id="userInfo"></span><button id="logout" class="secondary">Log Out</button></div></div>
+ <div id="producerWorkspace" class="hidden">
+  <div class="hero-box"><div class="kicker">Producer portal</div><h2 id="producerWelcome">Welcome</h2><p class="muted">Your own producer profile, transaction requests and account statement.</p></div>
+  <div class="cards"><div class="metric"><small>Producer ID</small><strong id="p-id">Pending</strong><small>Assigned after approval</small></div><div class="metric"><small>Registration</small><strong id="p-status">Pending</strong><small>Admin verification status</small></div><div class="metric"><small>My requests</small><strong id="p-requests">0</strong><small>Sale and purchase requests</small></div><div class="metric"><small>Approved value</small><strong id="p-value">₹0.00</strong><small>Based on approved requests</small></div></div>
+  <div class="grid2"><div class="panel"><h3>My Profile</h3><div id="myProfile"></div></div><div class="panel"><h3>Submit a Request</h3><form id="requestForm"><div class="field"><label>Request type</label><select name="type"><option value="Milk Sale">Milk Sale / Supply</option><option value="Purchase">Purchase Request</option><option value="Product Sale">Product Sale Request</option></select></div><div class="formgrid"><div class="field"><label>Item / product</label><input name="item" required placeholder="e.g. Milk, cattle feed"></div><div class="field"><label>Quantity</label><input name="qty" type="number" min="0.01" step="0.01" required></div><div class="field"><label>Rate (₹ per unit)</label><input name="rate" type="number" min="0" step="0.01" required></div><div class="field"><label>Unit</label><select name="unit"><option>litre</option><option>kg</option><option>quintal</option><option>piece</option><option>bag</option></select></div><div class="field full"><label>Remarks</label><textarea name="remarks" rows="2"></textarea></div></div><p><strong>Estimated value: <span id="requestEstimate">₹0.00</span></strong></p><button type="submit" id="submitRequest">Submit for Admin Approval</button></form></div></div>
+  <div class="panel"><h3>My Requests & Statements</h3><div id="myRequests"></div></div>
+ </div>
+ <div id="adminWorkspace" class="hidden">
+  <div class="layout"><nav id="adminNav">
+   <button class="navbtn active" data-page="dashboard">▦ Executive Dashboard</button><button class="navbtn" data-page="registrations">♙ Producer Approvals</button><button class="navbtn" data-page="requests">⇅ Sale / Purchase Approvals</button><button class="navbtn" data-page="members">♧ Producer Register</button><button class="navbtn" data-page="purchases">↓ Purchases & Inward</button><button class="navbtn" data-page="sales">↑ Sales & Invoices</button><button class="navbtn" data-page="products">▤ Inventory & Stock</button><button class="navbtn" data-page="expenses">₹ Expenses</button><button class="navbtn" data-page="ledger">⇄ Cashbook / Ledger</button><button class="navbtn" data-page="calculator">∑ Calculations</button><button class="navbtn" data-page="reports">▥ Reports & Backup</button>
+  </nav><main style="min-width:0">
+   <section class="admin-page" id="page-dashboard"><div class="heading"><div><h2>Executive Dashboard</h2><span class="muted">Summary of locally recorded ERP activity</span></div><button id="exportBackup">Export JSON Backup</button></div>
+    <div class="cards"><div class="metric"><small>Approved Sales</small><strong id="m-sales">₹0.00</strong></div><div class="metric"><small>Purchases / Inward</small><strong id="m-purchases">₹0.00</strong></div><div class="metric"><small>Expenses</small><strong id="m-expenses">₹0.00</strong></div><div class="metric"><small>Net Surplus*</small><strong id="m-net">₹0.00</strong><small>*Sales less purchases and expenses</small></div></div>
+    <div class="cards"><div class="metric"><small>Total Producers</small><strong id="m-members">0</strong></div><div class="metric"><small>Pending Registrations</small><strong id="m-pending-members">0</strong></div><div class="metric"><small>Pending Requests</small><strong id="m-pending-requests">0</strong></div><div class="metric"><small>Stock Items</small><strong id="m-stock">0</strong></div></div>
+    <div class="panel"><h3>Quick Actions</h3><div class="actions"><button data-goto="registrations">Review Registrations</button><button data-goto="requests">Review Requests</button><button data-goto="purchases">New Purchase</button><button data-goto="sales">New Sale</button><button data-goto="calculator">Open Calculator</button></div></div>
+    <div class="panel"><h3>Recent Activity</h3><div id="recentActivity"></div></div>
+   </section>
+   <section class="admin-page hidden" id="page-registrations"><div class="heading"><h2>Producer Registration Approvals</h2></div><div class="panel"><p class="muted">Approve a pending registration to assign a producer ID and enable producer access. Rejections are recorded with a reason.</p><div id="registrationTable"></div></div></section>
+   <section class="admin-page hidden" id="page-requests"><div class="heading"><h2>Sale / Purchase Requests</h2></div><div class="panel"><div id="requestTable"></div></div></section>
+   <section class="admin-page hidden" id="page-members"><div class="heading"><h2>Producer Register</h2></div><div class="panel"><form id="memberForm"><div class="formgrid"><div class="field"><label>Full name *</label><input name="name" required></div><div class="field"><label>Producer ID (optional)</label><input name="code" placeholder="Auto-assigned if blank"></div><div class="field"><label>Mobile *</label><input name="phone" required></div><div class="field"><label>Village / Address</label><input name="village"></div><div class="field"><label>Shares (number)</label><input name="shares" type="number" min="0" value="0"></div><div class="field"><label>Share face value (₹)</label><input name="faceValue" type="number" min="0" value="10"></div></div><button type="submit">Add Approved Producer</button></form></div><div class="panel"><div id="memberTable"></div></div></section>
+   <section class="admin-page hidden" id="page-purchases"><div class="heading"><h2>Purchases & Inward</h2></div><div class="panel"><form id="purchaseForm"><div class="formgrid"><div class="field"><label>Supplier / producer</label><input name="party" required></div><div class="field"><label>Item</label><input name="item" required></div><div class="field"><label>Quantity</label><input name="qty" type="number" min="0.01" step="0.01" required></div><div class="field"><label>Rate (₹)</label><input name="rate" type="number" min="0" step="0.01" required></div><div class="field"><label>GST % (if applicable)</label><input name="gst" type="number" min="0" max="100" step="0.01" value="0"></div><div class="field"><label>Invoice / reference</label><input name="ref"></div></div><button type="submit">Record Purchase</button></form></div><div class="panel"><div id="purchaseTable"></div></div></section>
+   <section class="admin-page hidden" id="page-sales"><div class="heading"><h2>Sales & Invoicing</h2></div><div class="panel"><form id="saleForm"><div class="formgrid"><div class="field"><label>Customer</label><input name="party" required></div><div class="field"><label>Item</label><input name="item" required></div><div class="field"><label>Quantity</label><input name="qty" type="number" min="0.01" step="0.01" required></div><div class="field"><label>Rate (₹)</label><input name="rate" type="number" min="0" step="0.01" required></div><div class="field"><label>GST % (verify applicable rate)</label><input name="gst" type="number" min="0" max="100" step="0.01" value="0"></div><div class="field"><label>Invoice / reference</label><input name="ref"></div></div><button type="submit">Record Sale & Print Invoice</button></form></div><div class="panel"><div id="saleTable"></div></div></section>
+   <section class="admin-page hidden" id="page-products"><div class="heading"><h2>Inventory & Stock Hub</h2></div><div class="panel"><form id="productForm"><div class="formgrid"><div class="field"><label>Item name</label><input name="name" required></div><div class="field"><label>Code</label><input name="code"></div><div class="field"><label>Opening / current quantity</label><input name="qty" type="number" step="0.01" required></div><div class="field"><label>Unit</label><input name="unit" value="kg" required></div><div class="field"><label>Reorder level</label><input name="reorder" type="number" step="0.01" value="0"></div></div><button type="submit">Save Stock Item</button></form></div><div class="panel"><div id="productTable"></div></div></section>
+   <section class="admin-page hidden" id="page-expenses"><div class="heading"><h2>Operational Expenses</h2></div><div class="panel"><form id="expenseForm"><div class="formgrid"><div class="field"><label>Expense category</label><input name="category" required></div><div class="field"><label>Amount (₹)</label><input name="amount" type="number" min="0.01" step="0.01" required></div><div class="field full"><label>Notes</label><input name="notes"></div></div><button type="submit">Record Expense</button></form></div><div class="panel"><div id="expenseTable"></div></div></section>
+   <section class="admin-page hidden" id="page-ledger"><div class="heading"><h2>Cashbook / Bank Ledger</h2></div><div class="panel"><form id="ledgerForm"><div class="formgrid"><div class="field"><label>Date</label><input name="date" type="date" required></div><div class="field"><label>Entry type</label><select name="type"><option>Receipt</option><option>Payment</option></select></div><div class="field"><label>Account / party</label><input name="party" required></div><div class="field"><label>Amount (₹)</label><input name="amount" type="number" min="0.01" step="0.01" required></div><div class="field full"><label>Narration</label><input name="note"></div></div><button type="submit">Add Ledger Entry</button></form></div><div class="panel"><div id="ledgerTable"></div></div></section>
+   <section class="admin-page hidden" id="page-calculator"><div class="heading"><h2>ERP Calculations</h2></div><div class="panel"><h3>Quantity × Rate + GST</h3><div class="formgrid"><div class="field"><label>Quantity</label><input id="c-qty" type="number" min="0" step="0.001" value="1"></div><div class="field"><label>Rate (₹)</label><input id="c-rate" type="number" min="0" step="0.01" value="0"></div><div class="field"><label>GST %</label><input id="c-gst" type="number" min="0" max="100" step="0.01" value="0"></div><div class="field"><label>Discount (₹)</label><input id="c-discount" type="number" min="0" step="0.01" value="0"></div></div><div class="cards" style="margin-top:16px"><div class="metric"><small>Subtotal</small><strong id="c-sub">₹0.00</strong></div><div class="metric"><small>GST amount</small><strong id="c-tax">₹0.00</strong></div><div class="metric"><small>Discount</small><strong id="c-disc">₹0.00</strong></div><div class="metric"><small>Grand total</small><strong id="c-total">₹0.00</strong></div></div><p class="muted mini">This is a general arithmetic calculator, not a tax classification or compliance determination. Verify applicable GST treatment before invoicing.</p></div></section>
+   <section class="admin-page hidden" id="page-reports"><div class="heading"><h2>Reports & Backup</h2></div><div class="panel"><h3>Export / Restore</h3><div class="actions"><button id="backupBtn">Download JSON Backup</button><button id="csvBtn" class="secondary">Export Summary CSV</button><button id="printBtn" class="secondary">Print Current View</button></div><div class="field" style="margin-top:15px"><label>Restore JSON backup (replaces current local records)</label><input id="restoreFile" type="file" accept=".json,application/json"></div></div><div class="panel"><h3>Audit / Activity</h3><div id="auditTable"></div></div><div class="notice">Data in this demonstration is stored in this browser only. Browser storage is not a secure shared database and is not a substitute for server-side backups or audit controls.</div></section>
+  </main></div>
+ </div>
+</section>
+<div class="footer">JALMATI FARMERS PRODUCER COMPANY LIMITED · Producer Portal & Enterprise ERP Suite</div>
+</div><div id="toast" class="toast hidden" role="status"></div>
+<script>
+(function(){
+'use strict';
+const KEY='jalmati_portal_erp_v1';
+const ADMIN_KEY='jalmati_admin_demo_v1';
+const blank=()=>({producers:[],requests:[],purchases:[],sales:[],products:[],expenses:[],ledger:[],audit:[]});
+let db=blank(),session=null,adminCred=null;
+const $=id=>document.getElementById(id);
+const esc=v=>String(v==null?'':v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const num=v=>Number(v)||0;
+const money=v=>'₹'+num(v).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});
+const id=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const formData=f=>Object.fromEntries(new FormData(f).entries());
+function load(){try{db=Object.assign(blank(),JSON.parse(localStorage.getItem(KEY)||'{}'));}catch(e){db=blank();}try{adminCred=JSON.parse(localStorage.getItem(ADMIN_KEY)||'null');}catch(e){adminCred=null;}}
+function persist(){try{localStorage.setItem(KEY,JSON.stringify(db));}catch(e){toast('Could not save browser data. Storage may be full.');}}
+function log(action,detail){db.audit.unshift({id:id(),date:new Date().toISOString(),actor:session?(session.role==='admin'?'Admin':session.name):'System',action,detail});db.audit=db.audit.slice(0,500);persist();}
+function toast(msg){$('toast').textContent=msg;$('toast').classList.remove('hidden');setTimeout(()=>$('toast').classList.add('hidden'),3200);}
+function status(s){return '<span class="pill '+esc(String(s).toLowerCase())+'">'+esc(s)+'</span>';}
+function table(target,heads,rows){$(target).innerHTML=rows.length?'<div class="tablewrap"><table><thead><tr>'+heads.map(h=>'<th>'+h+'</th>').join('')+'</tr></thead><tbody>'+rows.join('')+'</tbody></table></div>':'<div class="empty">No records to display.</div>';}
+function showAuth(){session=null;$('authView').classList.remove('hidden');$('appView').classList.add('hidden');$('producerWorkspace').classList.add('hidden');$('adminWorkspace').classList.add('hidden');}
+function enter(role,person){session={role,...person};$('authView').classList.add('hidden');$('appView').classList.remove('hidden');$('userInfo').innerHTML='<strong>'+esc(role==='admin'?'Administrator':person.name)+'</strong> <span class="role-chip">'+(role==='admin'?'ADMIN ERP':'PRODUCER')+'</span>';$('workspaceTitle').textContent=role==='admin'?'Admin ERP Suite':'Producer Portal';$('workspaceSub').textContent=role==='admin'?'Management, approvals, stock and accounts':'Your profile and your own requests only';$('adminWorkspace').classList.toggle('hidden',role!=='admin');$('producerWorkspace').classList.toggle('hidden',role!=='producer');if(role==='admin'){goPage('dashboard');renderAdmin();}else renderProducer();}
+function goPage(page){document.querySelectorAll('.admin-page').forEach(x=>x.classList.add('hidden'));$('page-'+page).classList.remove('hidden');document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.page===page));}
+function value(r){return num(r.qty)*num(r.rate);}
+function approvedSales(){return db.sales.reduce((s,x)=>s+num(x.total),0)+db.requests.filter(r=>r.status==='Approved'&&r.type!=='Purchase').reduce((s,r)=>s+value(r),0);}
+function approvedPurchases(){return db.purchases.reduce((s,x)=>s+num(x.total),0)+db.requests.filter(r=>r.status==='Approved'&&r.type==='Purchase').reduce((s,r)=>s+value(r),0);}
+function renderAdmin(){
+$('m-sales').textContent=money(approvedSales());$('m-purchases').textContent=money(approvedPurchases());const exp=db.expenses.reduce((s,x)=>s+num(x.amount),0);$('m-expenses').textContent=money(exp);$('m-net').textContent=money(approvedSales()-approvedPurchases()-exp);$('m-members').textContent=db.producers.filter(p=>p.status==='Approved').length;$('m-pending-members').textContent=db.producers.filter(p=>p.status==='Pending').length;$('m-pending-requests').textContent=db.requests.filter(r=>r.status==='Pending').length;$('m-stock').textContent=db.products.length;
+table('registrationTable',['Name / ID','Contact','Address','Submitted','Status','Actions'],db.producers.filter(p=>p.status==='Pending').map(p=>'<tr><td><strong>'+esc(p.name)+'</strong><br>'+esc(p.code||'Not assigned')+'</td><td>'+esc(p.phone)+'<br>'+esc(p.email||'')+'</td><td>'+esc(p.village||'')+'</td><td>'+esc((p.created||'').slice(0,10))+'</td><td>'+status(p.status)+'</td><td><div class="actions"><button onclick="JFP.approveProducer(\''+p.id+'\')">Approve</button><button class="danger" onclick="JFP.rejectProducer(\''+p.id+'\')">Reject</button></div></td></tr>'));
+table('requestTable',['Date','Producer','Type / Item','Qty × Rate','Value','Status','Actions'],db.requests.slice().reverse().map(r=>{const p=db.producers.find(p=>p.id===r.producerId);return '<tr><td>'+esc((r.created||'').slice(0,10))+'</td><td>'+esc(p?p.name:'Producer')+'<br><span class="muted">'+esc(p?p.code:'')+'</span></td><td>'+esc(r.type)+'<br>'+esc(r.item)+'<br><small>'+esc(r.remarks||'')+'</small></td><td>'+esc(r.qty)+' '+esc(r.unit)+' × '+money(r.rate)+'</td><td>'+money(value(r))+'</td><td>'+status(r.status)+(r.reason?'<br><small>'+esc(r.reason)+'</small>':'')+'</td><td>'+(r.status==='Pending'?'<div class="actions"><button onclick="JFP.requestDecision(\''+r.id+'\',\'Approved\')">Approve</button><button class="danger" onclick="JFP.requestDecision(\''+r.id+'\',\'Rejected\')">Reject</button></div>':'—')+'</td></tr>';}));
+table('memberTable',['Producer ID','Name','Phone','Village','Shares','Status'],db.producers.map(p=>'<tr><td>'+esc(p.code||'Pending')+'</td><td>'+esc(p.name)+'</td><td>'+esc(p.phone)+'</td><td>'+esc(p.village||'')+'</td><td>'+esc(p.shares||'0')+'</td><td>'+status(p.status)+'</td></tr>'));
+table('purchaseTable',['Date','Supplier','Item','Qty','Subtotal','GST','Total'],db.purchases.slice().reverse().map(x=>'<tr><td>'+esc(x.date)+'</td><td>'+esc(x.party)+'</td><td>'+esc(x.item)+'</td><td>'+esc(x.qty)+'</td><td>'+money(x.subtotal)+'</td><td>'+money(x.tax)+'</td><td>'+money(x.total)+'</td></tr>'));
+table('saleTable',['Date','Customer','Item','Qty','Subtotal','GST','Total','Print'],db.sales.slice().reverse().map(x=>'<tr><td>'+esc(x.date)+'</td><td>'+esc(x.party)+'</td><td>'+esc(x.item)+'</td><td>'+esc(x.qty)+'</td><td>'+money(x.subtotal)+'</td><td>'+money(x.tax)+'</td><td>'+money(x.total)+'</td><td><button class="secondary" onclick="JFP.printInvoice(\''+x.id+'\')">Print</button></td></tr>'));
+table('productTable',['Code','Item','Qty','Unit','Reorder','Stock status'],db.products.map(x=>'<tr><td>'+esc(x.code||'')+'</td><td>'+esc(x.name)+'</td><td>'+esc(x.qty)+'</td><td>'+esc(x.unit)+'</td><td>'+esc(x.reorder||0)+'</td><td>'+status(num(x.qty)<=num(x.reorder)?'Low Stock':'Available')+'</td></tr>'));
+table('expenseTable',['Date','Category','Notes','Amount'],db.expenses.slice().reverse().map(x=>'<tr><td>'+esc(x.date)+'</td><td>'+esc(x.category)+'</td><td>'+esc(x.notes||'')+'</td><td>'+money(x.amount)+'</td></tr>'));
+table('ledgerTable',['Date','Type','Party / Account','Narration','Amount'],db.ledger.slice().reverse().map(x=>'<tr><td>'+esc(x.date)+'</td><td>'+esc(x.type)+'</td><td>'+esc(x.party)+'</td><td>'+esc(x.note||'')+'</td><td>'+money(x.amount)+'</td></tr>'));
+table('auditTable',['Timestamp','Actor','Action','Details'],db.audit.map(x=>'<tr><td>'+esc(x.date.replace('T',' ').slice(0,19))+'</td><td>'+esc(x.actor)+'</td><td>'+esc(x.action)+'</td><td>'+esc(x.detail)+'</td></tr>'));
+const recent=db.audit.slice(0,8).map(x=>'<tr><td>'+esc(x.date.replace('T',' ').slice(0,16))+'</td><td>'+esc(x.actor)+'</td><td>'+esc(x.action)+'</td><td>'+esc(x.detail)+'</td></tr>');table('recentActivity',['Time','Actor','Action','Details'],recent);
+}
+function renderProducer(){
+const p=db.producers.find(x=>x.id===session.producerId);if(!p){toast('Producer profile not found. Please log in again.');showAuth();return;}
+$('producerWelcome').textContent='Welcome, '+p.name;$('p-id').textContent=p.code||'Pending';$('p-status').textContent=p.status;$('p-requests').textContent=db.requests.filter(r=>r.producerId===p.id).length;
+const reqs=db.requests.filter(r=>r.producerId===p.id);$('p-value').textContent=money(reqs.filter(r=>r.status==='Approved').reduce((s,r)=>s+value(r),0));
+$('myProfile').innerHTML='<p><strong>Name:</strong> '+esc(p.name)+'</p><p><strong>Producer ID:</strong> '+esc(p.code||'Not assigned yet')+'</p><p><strong>Mobile:</strong> '+esc(p.phone)+'</p><p><strong>Village:</strong> '+esc(p.village||'—')+'</p><p><strong>Email:</strong> '+esc(p.email||'—')+'</p><p><strong>Status:</strong> '+status(p.status)+'</p>'+(p.status!=='Approved'?'<p class="muted">Your account is awaiting approval. You may submit requests, but they cannot be approved until your registration is approved.</p>':'');
+table('myRequests',['Date','Request','Item','Quantity','Rate','Value','Status'],reqs.slice().reverse().map(r=>'<tr><td>'+esc((r.created||'').slice(0,10))+'</td><td>'+esc(r.type)+'</td><td>'+esc(r.item)+'</td><td>'+esc(r.qty)+' '+esc(r.unit)+'</td><td>'+money(r.rate)+'</td><td>'+money(value(r))+'</td><td>'+status(r.status)+(r.reason?'<br><small>'+esc(r.reason)+'</small>':'')+'</td></tr>'));
+$('requestForm').querySelector('button[type=submit]').disabled=p.status!=='Approved';$('requestForm').querySelector('button[type=submit]').title=p.status!=='Approved'?'Wait for registration approval':'';
+}
+function decisionProducer(pid,approved){const p=db.producers.find(x=>x.id===pid);if(!p)return;if(approved){p.status='Approved';p.code=p.code||('JFP-'+String(db.producers.indexOf(p)+1).padStart(4,'0'));}else{const reason=prompt('Reason for rejection (required):');if(reason===null)return;p.status='Rejected';p.reason=reason;}log(approved?'Producer approved':'Producer rejected',p.name+' / '+(p.code||p.phone));persist();renderAdmin();toast(approved?'Producer approved.':'Registration rejected.');}
+function requestDecision(rid,statusValue){const r=db.requests.find(x=>x.id===rid);if(!r||r.status!=='Pending')return;if(statusValue==='Rejected'){const reason=prompt('Reason for rejection (required):');if(reason===null)return;r.reason=reason;}else{const p=db.producers.find(x=>x.id===r.producerId);if(!p||p.status!=='Approved'){toast('Approve the producer registration before approving requests.');return;}if(r.type==='Purchase')db.purchases.push({id:id(),date:new Date().toISOString().slice(0,10),party:p.name,item:r.item,qty:r.qty,rate:r.rate,subtotal:value(r),tax:0,total:value(r),ref:'Producer request '+r.id,sourceRequest:r.id});else db.sales.push({id:id(),date:new Date().toISOString().slice(0,10),party:p.name,item:r.item,qty:r.qty,rate:r.rate,subtotal:value(r),tax:0,total:value(r),ref:'Producer request '+r.id,sourceRequest:r.id});}r.status=statusValue;r.reviewed=new Date().toISOString();log('Request '+statusValue.toLowerCase(),r.type+' · '+r.item+' · '+money(value(r)));persist();renderAdmin();toast('Request '+statusValue.toLowerCase()+'.');}
+function calcForm(f){const x=formData(f),subtotal=num(x.qty)*num(x.rate),tax=subtotal*num(x.gst)/100,total=subtotal+tax;return {...x,subtotal,tax,total,id:id(),date:new Date().toISOString().slice(0,10)};}
+function recordStock(name,delta,unit){let p=db.products.find(x=>x.name.toLowerCase()===name.toLowerCase());if(!p){p={id:id(),name,code:'STK-'+Math.floor(1000+Math.random()*9000),qty:0,unit:unit||'unit',reorder:0};db.products.push(p);}p.qty=num(p.qty)+delta;}
+function download(filename,content,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([content],{type}));a.download=filename;a.click();URL.revokeObjectURL(a.href);}
+function backup(){download('jalmati-erp-backup-'+new Date().toISOString().slice(0,10)+'.json',JSON.stringify({exportedAt:new Date().toISOString(),data:db},null,2),'application/json');}
+function csv(){const rows=[['Record Type','Date','Party','Item','Qty','Rate','Total','Status']];db.sales.forEach(x=>rows.push(['Sale',x.date,x.party,x.item,x.qty,x.rate,x.total,'Recorded']));db.purchases.forEach(x=>rows.push(['Purchase',x.date,x.party,x.item,x.qty,x.rate,x.total,'Recorded']));db.requests.forEach(x=>{const p=db.producers.find(p=>p.id===x.producerId);rows.push(['Request',x.created,p?p.name:'',x.item,x.qty,x.rate,value(x),x.status]);});download('jalmati-erp-summary.csv',rows.map(r=>r.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\r\n'),'text/csv;charset=utf-8');}
+function printInvoice(sid){const x=db.sales.find(x=>x.id===sid);if(!x)return;const w=window.open('','_blank');if(!w){toast('Allow pop-ups to print invoice.');return;}w.document.write('<!doctype html><title>Invoice</title><style>body{font:14px Arial;padding:30px}table{border-collapse:collapse;width:100%}td,th{border:1px solid #ccc;padding:10px;text-align:left}</style><h1>Jalmati Farmers Producer Company Limited</h1><h2>Sales Invoice</h2><p>Invoice date: '+esc(x.date)+' · Reference: '+esc(x.ref||x.id)+'</p><p>Customer: '+esc(x.party)+'</p><table><tr><th>Item</th><th>Qty</th><th>Rate</th><th>Subtotal</th><th>GST</th><th>Total</th></tr><tr><td>'+esc(x.item)+'</td><td>'+esc(x.qty)+'</td><td>'+money(x.rate)+'</td><td>'+money(x.subtotal)+'</td><td>'+money(x.tax)+'</td><td>'+money(x.total)+'</td></tr></table><p>Verify applicable tax classification and statutory invoice details before issuing this document.</p>');w.document.close();w.focus();w.print();}
+function calculator(){const sub=num($('c-qty').value)*num($('c-rate').value),tax=sub*num($('c-gst').value)/100,disc=Math.min(sub+tax,num($('c-discount').value));$('c-sub').textContent=money(sub);$('c-tax').textContent=money(tax);$('c-disc').textContent=money(disc);$('c-total').textContent=money(sub+tax-disc);}
+$('showLogin').onclick=()=>{$('producerLogin').classList.remove('hidden');$('producerRegister').classList.add('hidden');};
+$('showRegister').onclick=()=>{$('producerRegister').classList.remove('hidden');$('producerLogin').classList.add('hidden');};
+$('producerRegister').addEventListener('submit',e=>{e.preventDefault();const x=formData(e.target);if(db.producers.some(p=>p.phone.replace(/\D/g,'')===x.phone.replace(/\D/g,''))){toast('This mobile number is already registered.');return;}const p={...x,id:id(),code:'',status:'Pending',created:new Date().toISOString(),shares:0};db.producers.push(p);log('Producer registration submitted',p.name+' / '+p.phone);persist();e.target.reset();$('producerRegister').classList.add('hidden');$('producerLogin').classList.remove('hidden');toast('Registration submitted. Wait for admin approval.');});
+$('producerLogin').addEventListener('submit',e=>{e.preventDefault();const x=formData(e.target),identity=x.identity.trim().toLowerCase();const p=db.producers.find(p=>(p.phone.toLowerCase()===identity||(p.code||'').toLowerCase()===identity));if(!p||p.password!==x.password){toast('Login failed. Check your ID/mobile and password.');return;}if(p.status==='Rejected'){toast('Registration rejected. Contact the company office.');return;}enter('producer',{producerId:p.id,name:p.name});});
+$('adminLogin').addEventListener('submit',e=>{e.preventDefault();const x=formData(e.target);if(!adminCred){const confirmSetup=confirm('No administrator is configured in this browser. Set the entered username and password as this browser’s demo administrator? This is NOT secure for a public website. For production, configure admin accounts on a server.');if(!confirmSetup)return;adminCred={username:x.username,password:x.password};localStorage.setItem(ADMIN_KEY,JSON.stringify(adminCred));toast('Demo administrator configured in this browser.');}if(x.username!==adminCred.username||x.password!==adminCred.password){toast('Admin login failed.');return;}enter('admin',{name:x.username});});
+$('logout').onclick=()=>showAuth();
+$('requestForm').addEventListener('input',()=>{const f=formData($('requestForm'));$('requestEstimate').textContent=money(num(f.qty)*num(f.rate));});
+$('requestForm').addEventListener('submit',e=>{e.preventDefault();const p=db.producers.find(p=>p.id===session.producerId);if(!p||p.status!=='Approved'){toast('Your producer account must be approved first.');return;}const x=formData(e.target);db.requests.push({...x,id:id(),producerId:p.id,status:'Pending',created:new Date().toISOString()});log('Producer request submitted',x.type+' · '+x.item);persist();renderProducer();e.target.reset();$('requestEstimate').textContent=money(0);toast('Request sent to admin for approval.');});
+$('memberForm').addEventListener('submit',e=>{e.preventDefault();const x=formData(e.target);if(db.producers.some(p=>p.phone===x.phone)){toast('A producer with this phone already exists.');return;}const p={...x,id:id(),code:x.code||('JFP-'+String(db.producers.length+1).padStart(4,'0')),status:'Approved',created:new Date().toISOString(),password:'',email:''};db.producers.push(p);log('Admin added producer',p.name);persist();renderAdmin();e.target.reset();toast('Producer added. Login credentials must be provisioned securely in production.');});
+$('purchaseForm').addEventListener('submit',e=>{e.preventDefault();const x=calcForm(e.target);db.purchases.push(x);recordStock(x.item,num(x.qty), 'unit');log('Purchase recorded',x.item+' · '+money(x.total));persist();renderAdmin();e.target.reset();toast('Purchase recorded and stock increased.');});
+$('saleForm').addEventListener('submit',e=>{e.preventDefault();const x=calcForm(e.target);const stock=db.products.find(p=>p.name.toLowerCase()===x.item.toLowerCase());if(stock&&num(stock.qty)<num(x.qty)){if(!confirm('Stock is lower than this sale quantity. Record anyway?'))return;}db.sales.push(x);if(stock)stock.qty=num(stock.qty)-num(x.qty);log('Sale recorded',x.item+' · '+money(x.total));persist();renderAdmin();e.target.reset();toast('Sale recorded.');window.setTimeout(()=>printInvoice(x.id),100);});
+$('productForm').addEventListener('submit',e=>{e.preventDefault();const x=formData(e.target),found=db.products.find(p=>p.name.toLowerCase()===x.name.toLowerCase());if(found){found.code=x.code||found.code;found.qty=num(x.qty);found.unit=x.unit;found.reorder=num(x.reorder);}else db.products.push({...x,id:id(),qty:num(x.qty),reorder:num(x.reorder)});log('Stock item saved',x.name+' · '+x.qty+' '+x.unit);persist();renderAdmin();e.target.reset();toast('Stock item saved.');});
+$('expenseForm').addEventListener('submit',e=>{e.preventDefault();const x=formData(e.target);db.expenses.push({...x,id:id(),date:new Date().toISOString().slice(0,10),amount:num(x.amount)});log('Expense recorded',x.category+' · '+money(x.amount));persist();renderAdmin();e.target.reset();toast('Expense recorded.');});
+$('ledgerForm').addEventListener('submit',e=>{e.preventDefault();const x=formData(e.target);db.ledger.push({...x,id:id(),amount:num(x.amount)});log('Ledger entry added',x.type+' · '+x.party+' · '+money(x.amount));persist();renderAdmin();e.target.reset();toast('Ledger entry added.');});
+document.querySelectorAll('.navbtn').forEach(b=>b.addEventListener('click',()=>goPage(b.dataset.page)));document.querySelectorAll('[data-goto]').forEach(b=>b.addEventListener('click',()=>goPage(b.dataset.goto)));
+['c-qty','c-rate','c-gst','c-discount'].forEach(x=>$(x).addEventListener('input',calculator));
+$('exportBackup').onclick=$('backupBtn').onclick=backup;$('csvBtn').onclick=csv;$('printBtn').onclick=()=>window.print();
+$('restoreFile').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const parsed=JSON.parse(r.result),data=parsed.data||parsed;if(!confirm('Replace all local records with this backup?'))return;const fresh=blank();Object.keys(fresh).forEach(k=>{if(Array.isArray(data[k]))fresh[k]=data[k];});db=fresh;persist();renderAdmin();toast('Backup restored.');}catch(err){toast('Invalid backup file.');}e.target.value='';};r.readAsText(f);});
+window.JFP={approveProducer:id=>decisionProducer(id,true),rejectProducer:id=>decisionProducer(id,false),requestDecision,printInvoice};
+load();calculator();
+})();
+</script>
+</body></html>
