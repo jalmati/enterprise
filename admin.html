@@ -1,0 +1,338 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>JALMATI FPC — Admin Panel</title>
+<style>
+:root{font-family:Arial,sans-serif;color:#173526;background:#f1f6f1}
+*{box-sizing:border-box}body{margin:0}
+header{background:#14532d;color:white;padding:18px 22px}
+header h1{margin:0;font-size:23px}
+header p{margin:6px 0 0;color:#d1fae5}
+main{max-width:1100px;margin:22px auto;padding:0 15px}
+.card{background:white;border:1px solid #dce7dc;border-radius:14px;
+padding:20px;margin-bottom:16px;box-shadow:0 3px 12px #163b2410}
+input,select,button{font:inherit;padding:12px;border-radius:8px}
+input{display:block;width:100%;border:1px solid #cbd5cb;margin:8px 0 14px}
+button{border:0;background:#166534;color:white;cursor:pointer}
+button:disabled{opacity:.55;cursor:wait}
+nav{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+nav button{background:#e0eee3;color:#14532d}
+nav button.active{background:#14532d;color:white}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+.metric{font-size:27px;font-weight:bold;margin-top:10px}
+.muted{color:#647568;font-size:13px}
+.status{margin:12px 0;overflow-wrap:anywhere}
+.tablewrap{overflow:auto}
+table{border-collapse:collapse;width:100%;min-width:480px}
+th,td{text-align:left;padding:10px;border-bottom:1px solid #e5ece5}
+th{background:#f2f7f2}
+.hidden{display:none!important}
+#language{float:right;background:white;color:#14532d}
+footer{text-align:center;color:#647568;padding:20px;font-size:12px}
+</style>
+</head>
+<body>
+<header>
+<button id="language">বাংলা</button>
+<h1>JALMATI FPC</h1>
+<p data-en="Administrator Console" data-bn="অ্যাডমিন প্যানেল">Administrator Console</p>
+</header>
+<main>
+<section id="login" class="card">
+<h2 data-en="Secure Admin Login" data-bn="নিরাপদ অ্যাডমিন লগইন">Secure Admin Login</h2>
+<p class="muted" data-en="Authorized administrators only."
+data-bn="শুধুমাত্র অনুমোদিত অ্যাডমিনদের জন্য।">Authorized administrators only.</p>
+<form id="loginForm">
+<label for="email" data-en="Email address" data-bn="ইমেল ঠিকানা">Email address</label>
+<input id="email" type="email" autocomplete="username" required>
+<label for="password" data-en="Password" data-bn="পাসওয়ার্ড">Password</label>
+<input id="password" type="password" autocomplete="current-password" required>
+<button id="loginButton" type="submit"
+data-en="Sign in" data-bn="লগইন করুন">Sign in</button>
+</form>
+<p id="loginStatus" class="status" role="status"></p>
+</section>
+
+<section id="dashboard" class="hidden">
+<div class="card">
+<strong id="welcome">Admin / অ্যাডমিন</strong>
+<p class="muted" id="userEmail"></p>
+<button id="logout" data-en="Sign out" data-bn="লগআউট">Sign out</button>
+</div>
+
+<nav id="navigation">
+<button class="active" data-collection="dashboard"
+data-en="Dashboard" data-bn="ড্যাশবোর্ড">Dashboard</button>
+<button data-collection="producers"
+data-en="Producers" data-bn="উৎপাদক">Producers</button>
+<button data-collection="requests"
+data-en="Requests" data-bn="আবেদন">Requests</button>
+<button data-collection="purchases"
+data-en="Purchases" data-bn="ক্রয়">Purchases</button>
+<button data-collection="sales"
+data-en="Sales" data-bn="বিক্রয়">Sales</button>
+<button data-collection="products"
+data-en="Inventory" data-bn="মজুত">Inventory</button>
+<button data-collection="expenses"
+data-en="Expenses" data-bn="খরচ">Expenses</button>
+<button data-collection="ledger"
+data-en="Ledger" data-bn="খতিয়ান">Ledger</button>
+<button data-collection="audit"
+data-en="Audit Log" data-bn="কার্যবিবরণী">Audit Log</button>
+</nav>
+
+<div id="content" class="card">
+<h2>Dashboard / ড্যাশবোর্ড</h2>
+<p>Loading / লোড হচ্ছে…</p>
+</div>
+<p id="appStatus" class="status" role="status"></p>
+</section>
+</main>
+<footer>JALMATI FPC · Secure administration</footer>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+(() => {
+  // Replace these values with your Firebase web-app configuration.
+  const firebaseConfig = {
+    apiKey: "YOUR_FIREBASE_API_KEY",
+    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    appId: "YOUR_FIREBASE_APP_ID"
+  };
+
+  const $ = id => document.getElementById(id);
+  let language = "en";
+  let db, auth, currentUser = null;
+
+  const labels = {
+    producers: ["Producers", "উৎপাদক"],
+    requests: ["Requests", "আবেদন"],
+    purchases: ["Purchases", "ক্রয়"],
+    sales: ["Sales", "বিক্রয়"],
+    products: ["Inventory", "মজুত"],
+    expenses: ["Expenses", "খরচ"],
+    ledger: ["Ledger", "খতিয়ান"],
+    audit: ["Audit Log", "কার্যবিবরণী"]
+  };
+
+  function msg(en, bn) {
+    return language === "bn" ? bn : en;
+  }
+
+  function status(id, en, bn) {
+    $(id).textContent = msg(en, bn);
+  }
+
+  function setLanguage(next) {
+    language = next;
+    document.documentElement.lang = language;
+    document.querySelectorAll("[data-en][data-bn]").forEach(el => {
+      el.textContent = el.dataset[language];
+    });
+    $("language").textContent = language === "en" ? "বাংলা" : "English";
+  }
+
+  $("language").addEventListener("click", () => {
+    setLanguage(language === "en" ? "bn" : "en");
+    if (currentUser) loadSection(
+      document.querySelector("#navigation .active")?.dataset.collection || "dashboard"
+    );
+  });
+
+  function showLogin() {
+    currentUser = null;
+    $("login").classList.remove("hidden");
+    $("dashboard").classList.add("hidden");
+  }
+
+  function showDashboard(user) {
+    currentUser = user;
+    $("login").classList.add("hidden");
+    $("dashboard").classList.remove("hidden");
+    $("userEmail").textContent = user.email || "";
+    loadSection("dashboard");
+  }
+
+  function node(tag, text, className) {
+    const el = document.createElement(tag);
+    if (text !== undefined) el.textContent = text;
+    if (className) el.className = className;
+    return el;
+  }
+
+  async function requireAdmin(user) {
+    const token = await user.getIdTokenResult(true);
+    if (token.claims.admin !== true) {
+      await auth.signOut();
+      throw new Error("ADMIN_ACCESS_DENIED");
+    }
+  }
+
+  $("loginForm").addEventListener("submit", async event => {
+    event.preventDefault();
+    $("loginButton").disabled = true;
+    status("loginStatus", "Signing in…", "লগইন হচ্ছে…");
+
+    try {
+      if (!auth) throw new Error("FIREBASE_NOT_CONFIGURED");
+      const result = await auth.signInWithEmailAndPassword(
+        $("email").value.trim(),
+        $("password").value
+      );
+      await requireAdmin(result.user);
+      $("password").value = "";
+    } catch (error) {
+      console.error("Admin login failed:", error.code || error.message);
+      status("loginStatus",
+        "Login failed or admin access is not authorized.",
+        "লগইন ব্যর্থ অথবা অ্যাডমিন অনুমতি নেই।");
+    } finally {
+      $("loginButton").disabled = false;
+    }
+  });
+
+  $("logout").addEventListener("click", async () => {
+    try {
+      await auth.signOut();
+    } catch (error) {
+      status("appStatus", "Sign-out failed.", "লগআউট ব্যর্থ হয়েছে।");
+    }
+  });
+
+  $("navigation").addEventListener("click", event => {
+    const button = event.target.closest("button[data-collection]");
+    if (!button) return;
+    document.querySelectorAll("#navigation button").forEach(b =>
+      b.classList.toggle("active", b === button));
+    loadSection(button.dataset.collection);
+  });
+
+  async function countCollection(name) {
+    // Uses a real Firestore read, subject to Security Rules.
+    const snapshot = await db.collection(name).get();
+    return snapshot.size;
+  }
+
+  async function loadSection(section) {
+    const content = $("content");
+    content.replaceChildren(node("p", msg("Loading…", "লোড হচ্ছে…")));
+    $("appStatus").textContent = "";
+
+    try {
+      await requireAdmin(auth.currentUser);
+
+      if (section === "dashboard") {
+        const names = Object.keys(labels);
+        const counts = await Promise.all(names.map(countCollection));
+        content.replaceChildren(node("h2", msg("Dashboard", "ড্যাশবোর্ড")));
+        const grid = node("div", undefined, "grid");
+        names.forEach((name, index) => {
+          const card = node("div", undefined, "card");
+          card.append(node("div", labels[name][language === "en" ? 0 : 1]));
+          card.append(node("div", String(counts[index]), "metric"));
+          grid.append(card);
+        });
+        content.append(grid);
+        return;
+      }
+
+      if (!labels[section]) throw new Error("UNKNOWN_SECTION");
+
+      const snapshot = await db.collection(section).limit(100).get();
+      content.replaceChildren(
+        node("h2", labels[section][language === "en" ? 0 : 1])
+      );
+
+      if (snapshot.empty) {
+        content.append(node("p", msg("No records found.", "কোনও রেকর্ড পাওয়া যায়নি।")));
+        return;
+      }
+
+      const wrap = node("div", undefined, "tablewrap");
+      const table = node("table");
+      const head = node("thead");
+      const headerRow = node("tr");
+      ["Document ID", "Status", "Details"].forEach(text =>
+        headerRow.append(node("th", text)));
+      head.append(headerRow);
+      table.append(head);
+      const body = node("tbody");
+
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        const row = node("tr");
+        row.append(node("td", doc.id));
+        row.append(node("td", String(data.status || data.approvalStatus || "—")));
+        const details = Object.entries(data)
+          .filter(([key]) => !/password|token|secret|credential/i.test(key))
+          .slice(0, 5)
+          .map(([key, value]) =>
+            key + ": " + (typeof value === "object" ? JSON.stringify(value) : String(value))
+          ).join(" · ");
+        row.append(node("td", details || "—"));
+        body.append(row);
+      });
+
+      table.append(body);
+      wrap.append(table);
+      content.append(wrap);
+      content.append(node("p",
+        msg("Showing up to 100 records. Read-only view.",
+            "সর্বোচ্চ ১০০টি রেকর্ড। শুধু দেখার সুবিধা।"),
+        "muted"));
+    } catch (error) {
+      console.error("Admin data request failed:", error.code || error.message);
+      content.replaceChildren(node("h2", msg("Access unavailable", "তথ্য দেখা যাচ্ছে না")));
+      content.append(node("p",
+        msg("Check Firebase configuration, collection names, and Firestore Security Rules.",
+            "Firebase কনফিগারেশন, কালেকশনের নাম এবং Firestore Security Rules পরীক্ষা করুন।")));
+      status("appStatus", "Unable to load records.", "রেকর্ড লোড করা যায়নি।");
+    }
+  }
+
+  try {
+    if (firebaseConfig.apiKey.startsWith("YOUR_") ||
+        firebaseConfig.projectId.startsWith("YOUR_") ||
+        firebaseConfig.appId.startsWith("YOUR_")) {
+      status("loginStatus",
+        "Setup required: add your Firebase web configuration.",
+        "সেটআপ প্রয়োজন: Firebase web configuration যোগ করুন।");
+    } else {
+      firebase.initializeApp(firebaseConfig);
+      auth = firebase.auth();
+      db = firebase.firestore();
+
+      auth.onAuthStateChanged(async user => {
+        if (!user) {
+          showLogin();
+          return;
+        }
+        try {
+          await requireAdmin(user);
+          showDashboard(user);
+        } catch (error) {
+          showLogin();
+          status("loginStatus",
+            "Administrator permission required.",
+            "অ্যাডমিন অনুমতি প্রয়োজন।");
+        }
+      });
+    }
+  } catch (error) {
+    console.error("Firebase initialization failed:", error);
+    status("loginStatus",
+      "Firebase initialization failed. Check configuration.",
+      "Firebase চালু হয়নি। কনফিগারেশন পরীক্ষা করুন।");
+  }
+
+  setLanguage("en");
+})();
+</script>
+</body>
+</html>
