@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jalmati FPC - Advanced Enterprise ERP & Accounting Suite</title>
+    <title>Jalmati FPC - Advanced Institutional ERP Suite</title>
     <style>
         :root {
             --green: #176b45;
@@ -14,6 +14,7 @@
             --text: #203328;
             --muted: #718075;
             --accent: #d97706;
+            --warn: #b91c1c;
         }
 
         * { box-sizing: border-box; }
@@ -32,7 +33,7 @@
             border-radius: 8px;
             background: var(--green);
             color: white;
-            padding: 11px 14px;
+            padding: 10px 14px;
             cursor: pointer;
             font-weight: bold;
         }
@@ -52,7 +53,7 @@
             display: block;
             font-size: 12px;
             font-weight: bold;
-            margin-bottom: 6px;
+            margin-bottom: 5px;
         }
 
         .top {
@@ -63,42 +64,60 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
-        .auth-badge {
-            background: rgba(255,255,255,0.15);
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-size: 11px;
+        .role-picker {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.4);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 6px;
         }
 
         header {
             background: linear-gradient(120deg, #176b45, #25895a);
             color: white;
-            padding: 25px 22px;
+            padding: 22px;
         }
 
-        header h1 {
-            margin: 0 0 8px;
-            font-size: clamp(20px, 3vw, 30px);
-        }
-
+        header h1 { margin: 0 0 5px; font-size: clamp(20px, 3vw, 26px); }
         header p { margin: 0; color: #e1f4e7; }
 
-        .notice {
-            background: #fff8e7;
-            border: 1px solid #ead6a4;
-            border-radius: 9px;
-            padding: 12px;
+        .wrap { max-width: 1450px; margin: auto; padding: 20px; }
+
+        /* Global Search & Universal Bar */
+        .action-bar {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 12px;
             margin-bottom: 16px;
-            line-height: 1.6;
         }
 
-        .wrap {
-            max-width: 1400px;
-            margin: auto;
-            padding: 20px;
+        .search-box input {
+            padding: 12px;
+            font-size: 14px;
+            border-radius: 9px;
         }
+
+        .universal-btn {
+            background: var(--accent);
+            font-size: 14px;
+            padding: 0 20px;
+        }
+        .universal-btn:hover { background: #b45309; }
+
+        /* Alerts banner */
+        .alerts-panel {
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+        }
+        .alerts-panel h4 { margin: 0 0 6px; color: #92400e; font-size: 13px; }
+        .alert-item { font-size: 12px; color: #b45309; margin-bottom: 3px; }
 
         .layout {
             display: grid;
@@ -136,7 +155,7 @@
         }
 
         .panel { padding: 17px; margin-bottom: 16px; }
-        .panel h3 { margin: 0 0 14px; }
+        .panel h3 { margin: 0 0 14px; display: flex; justify-content: space-between; align-items: center; }
         .muted { color: var(--muted); }
 
         .heading {
@@ -147,8 +166,7 @@
             flex-wrap: wrap;
             margin: 0 0 17px;
         }
-
-        .heading h2 { margin: 0; font-size: 23px; }
+        .heading h2 { margin: 0; font-size: 22px; }
 
         .cards {
             display: grid;
@@ -157,19 +175,13 @@
             margin-bottom: 17px;
         }
 
-        .metric { padding: 15px; min-width: 0; }
+        .metric { padding: 15px; }
         .metric small { color: var(--muted); }
         .metric strong {
             display: block;
-            font-size: clamp(18px, 2.3vw, 26px);
-            margin: 9px 0;
+            font-size: clamp(18px, 2.2vw, 24px);
+            margin: 8px 0;
             overflow-wrap: anywhere;
-        }
-
-        .grid2 {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 15px;
         }
 
         .formgrid {
@@ -177,19 +189,27 @@
             grid-template-columns: repeat(2, minmax(0, 1fr));
             gap: 12px;
         }
-
         .field.full { grid-column: 1 / -1; }
-        .field input, .field select { margin-top: 2px; }
-        .actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 13px; }
+        .actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
         .secondary { background: #eaf3ec; color: var(--green); }
-        .danger { background: #a93131; }
-        .accent-btn { background: var(--accent); }
-        .accent-btn:hover { background: #b45309; }
+        .danger { background: var(--warn); }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+        .badge-draft { background: #e2e8f0; color: #475569; }
+        .badge-submitted { background: #fef3c7; color: #92400e; }
+        .badge-approved { background: #dcfce7; color: #166534; }
+        .badge-posted { background: #dbeafe; color: #1e40af; }
 
         .hidden { display: none !important; }
 
         .tablewrap { overflow-x: auto; }
-        table { border-collapse: collapse; width: 100%; min-width: 580px; }
+        table { border-collapse: collapse; width: 100%; min-width: 650px; }
         th, td {
             padding: 10px;
             border-bottom: 1px solid #e9efea;
@@ -199,134 +219,137 @@
         th { background: #f5f9f5; }
         .empty { padding: 20px; text-align: center; color: var(--muted); }
 
-        .footer {
-            padding: 24px;
-            text-align: center;
-            color: var(--muted);
-            font-size: 12px;
+        /* Modal styling */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+            display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 15px;
         }
+        .modal {
+            background: white; border-radius: 12px; padding: 22px; width: 100%; max-width: 600px;
+            max-height: 90vh; overflow-y: auto;
+        }
+
+        .footer { padding: 20px; text-align: center; color: var(--muted); font-size: 12px; }
 
         @media(max-width: 900px) {
             .layout { grid-template-columns: 1fr; }
-            nav { position: static; display: flex; overflow-x: auto; gap: 5px; }
+            nav { position: static; display: flex; overflow-x: auto; gap: 4px; }
             .navbtn { width: auto; flex: 0 0 auto; white-space: nowrap; }
             .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-            .grid2 { grid-template-columns: 1fr; }
+            .formgrid { grid-template-columns: 1fr; }
+            .action-bar { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
     <div class='top'>
-        <div>🌱 JALMATI FPC | Advanced Enterprise ERP &amp; GST Suite</div>
-        <div><span class='auth-badge'>Murshidabad Hub (State Code: 19)</span></div>
+        <div>🌱 JALMATI FPC | Advanced Institutional ERP Suite (CIN: U01611WR2026PTC293091)</div>
+        <div style="display:flex; align-items:center; gap:8px;">
+            <span>Role:</span>
+            <select id='active-role' class='role-picker' onchange='JFP.setRole(this.value)'>
+                <option value='admin'>Admin (Full Control)</option>
+                <option value='accountant'>Accountant (Post &amp; Periods)</option>
+                <option value='procurement'>Procurement Operator</option>
+                <option value='sales'>Sales Operator</option>
+                <option value='auditor'>Auditor (Read-Only)</option>
+            </select>
+        </div>
     </div>
 
     <header>
-        <h1>JALMATI FARMERS PRODUCER COMPANY LIMITED</h1>
-        <p>CIN: U01611WR2026PTC293091 • Advanced Stock, GST Invoicing &amp; Member Ledger</p>
+        <h1>Jalmati Farmers Producer Company Limited</h1>
+        <p>Bhandara, Murshidabad, West Bengal • Universal Search, Approvals &amp; Stock Guardrails</p>
     </header>
 
     <div class='wrap'>
-        <div class='notice'>
-            <strong>Advanced ERP Engine Active.</strong> Features automated stock deduction safeguards, GST (CGST+SGST 18%) calculation support, and printable tax invoices.
+        <!-- Universal Action & Global Search Bar -->
+        <div class='action-bar'>
+            <div class='search-box'>
+                <input id='global-search' type='text' placeholder='🔍 Global Search: Find any member, product, invoice, or transaction...' oninput='JFP.search(this.value)'>
+            </div>
+            <button class='universal-btn' onclick='JFP.openUniversalModal()'>＋ Universal Add</button>
+        </div>
+
+        <!-- Smart Alerts Banner -->
+        <div class='alerts-panel' id='alerts-banner'>
+            <h4>⚠️ System Alerts &amp; Actionable Queue</h4>
+            <div id='alerts-list'><div class='alert-item'>No immediate alerts. Stock levels optimal.</div></div>
         </div>
 
         <div class='layout'>
             <nav>
                 <button class='navbtn active' data-page='dashboard'>▦ Dashboard</button>
-                <button class='navbtn' data-page='members'>♙ Farmers / Share Ledger</button>
-                <button class='navbtn' data-page='purchases'>↓ Purchases &amp; Inward</button>
-                <button class='navbtn' data-page='sales'>↑ Sales &amp; GST Invoicing</button>
-                <button class='navbtn' data-page='products'>▤ Inventory &amp; Stock Hub</button>
+                <button class='navbtn' data-page='members'>♙ Members &amp; Documents</button>
+                <button class='navbtn' data-page='purchases'>↓ Purchases &amp; Inwards</button>
+                <button class='navbtn' data-page='sales'>↑ Sales &amp; Invoicing</button>
+                <button class='navbtn' data-page='products'>▤ Stock &amp; Inventory</button>
                 <button class='navbtn' data-page='expenses'>₹ Operational Expenses</button>
-                <button class='navbtn' data-page='ledger'>⇄ Cashbook / Bank Ledger</button>
-                <button class='navbtn' data-page='reports'>▥ Financial Reports</button>
-                <button class='navbtn' data-page='settings'>⚙ Backup &amp; Settings</button>
+                <button class='navbtn' data-page='ledger'>⇄ Ledger &amp; Periods</button>
+                <button class='navbtn' data-page='approvals'>🛡 Approvals Queue <span id='approval-badge' class='badge badge-submitted'>0</span></button>
+                <button class='navbtn' data-page='reports'>▥ Reports &amp; Exports</button>
+                <button class='navbtn' data-page='settings'>⚙ Settings &amp; Security</button>
             </nav>
 
             <main>
-                <!-- Dashboard Section -->
+                <!-- Dashboard -->
                 <section class='page' id='page-dashboard'>
                     <div class='heading'>
-                        <div>
-                            <h2>Executive Dashboard</h2>
-                            <span class='muted'>Real-time FPC financial indicators</span>
-                        </div>
-                        <button onclick='JFP.backup()'>Export JSON Backup</button>
+                        <h2>Executive Dashboard</h2>
+                        <button onclick='JFP.backup()'>Export Backup</button>
                     </div>
-
                     <div class='cards'>
-                        <div class='metric'><small>Total Sales (Incl. GST)</small><strong id='m-sales'>₹0.00</strong></div>
+                        <div class='metric'><small>Total Sales (Posted)</small><strong id='m-sales'>₹0.00</strong></div>
                         <div class='metric'><small>Total Purchases</small><strong id='m-purchases'>₹0.00</strong></div>
                         <div class='metric'><small>Total Expenses</small><strong id='m-expenses'>₹0.00</strong></div>
                         <div class='metric'><small>Net Surplus</small><strong id='m-net'>₹0.00</strong></div>
                     </div>
-
-                    <div class='grid2'>
-                        <div class='panel'>
-                            <h3>Quick Actions</h3>
-                            <div class='actions'>
-                                <button onclick='JFP.page("members")'>Add Member</button>
-                                <button onclick='JFP.page("purchases")'>New Purchase</button>
-                                <button onclick='JFP.page("sales")'>Generate Sale</button>
-                                <button onclick='JFP.page("expenses")'>Add Expense</button>
-                            </div>
-                        </div>
-
-                        <div class='panel'>
-                            <h3>Corporate Particulars</h3>
-                            <p class='muted'>
-                                <strong>Legal Entity:</strong> Jalmati Farmers Producer Company Limited<br/>
-                                <strong>CIN:</strong> U01611WR2026PTC293091<br/>
-                                <strong>Registered Office:</strong> C/O Someswar Ghosh, Bhandara, Murshidabad, West Bengal 742138<br/>
-                                <strong>Paid-up Capital:</strong> ₹1,00,000.00 | Authorized: ₹10,00,000.00
-                            </p>
-                        </div>
-                    </div>
-
                     <div class='panel'>
-                        <h3>Recent Transactions</h3>
-                        <div id='recent'></div>
+                        <h3>Global Search Results <span id='search-count' class='muted' style='font-size:12px;'></span></h3>
+                        <div id='search-results-box'><p class='muted'>Type in the global search bar above to query members, crops, or invoices instantly.</p></div>
+                    </div>
+                    <div class='panel'>
+                        <h3>Recent Posted Transactions</h3>
+                        <div id='recent-table'></div>
                     </div>
                 </section>
 
                 <!-- Members Section -->
                 <section class='page hidden' id='page-members'>
-                    <div class='heading'><h2>Farmer Member &amp; Shareholder Register</h2></div>
+                    <div class='heading'><h2>Farmer Members &amp; Document Centre</h2></div>
                     <div class='panel'>
-                        <h3>Register New Producer Member</h3>
-                        <form id='member-form'>
+                        <h3>Register Member &amp; Attach Document</h3>
+                        <form id='member-form' onsubmit='JFP.addMember(event)'>
                             <div class='formgrid'>
-                                <div class='field'><label>Farmer Full Name *</label><input name='name' required></div>
+                                <div class='field'><label>Full Name *</label><input name='name' required></div>
                                 <div class='field'><label>Member ID</label><input name='code' placeholder='JFP-MEM-001'></div>
-                                <div class='field'><label>Phone Number</label><input name='phone' inputmode='tel'></div>
-                                <div class='field'><label>Village / Tehsil</label><input name='village' value='Bhandara, Murshidabad'></div>
+                                <div class='field'><label>Phone</label><input name='phone'></div>
+                                <div class='field'><label>Village</label><input name='village' value='Bhandara, Murshidabad'></div>
                                 <div class='field'><label>Land Holding (Acres)</label><input name='land' type='number' step='0.1' value='1.0'></div>
-                                <div class='field'><label>Shares Allotted (₹10 Face Value)</label><input name='shares' type='number' value='10'></div>
+                                <div class='field'><label>Upload KYC / Aadhaar / Land Deed (Simulated)</label><input name='doc' type='file'></div>
                             </div>
-                            <div class='actions'><button type='submit'>Save Member Record</button></div>
+                            <div class='actions'><button type='submit'>Save Member</button></div>
                         </form>
                     </div>
-                    <div class='panel'><h3>All Registered Members</h3><div id='members-table'></div></div>
+                    <div class='panel'><h3>Registered Members</h3><div id='members-table'></div></div>
                 </section>
 
                 <!-- Purchases Section -->
                 <section class='page hidden' id='page-purchases'>
-                    <div class='heading'><h2>Agriculture Purchases &amp; Inward Hub</h2></div>
+                    <div class='heading'><h2>Purchases &amp; Inward Hub</h2></div>
                     <div class='panel'>
-                        <h3>Record Produce Purchase (Auto-Stock Addition)</h3>
-                        <form id='purchase-form'>
+                        <h3>Record Purchase (Enters Approval Flow)</h3>
+                        <form id='purchase-form' onsubmit='JFP.addTx("purchases", event)'>
                             <div class='formgrid'>
                                 <div class='field'><label>Date *</label><input name='date' type='date' required></div>
-                                <div class='field'><label>Farmer / Supplier Name *</label><input name='party' required></div>
-                                <div class='field'><label>Crop / Produce Name *</label><input name='item' required placeholder='e.g. Raw Paddy / Jute'></div>
+                                <div class='field'><label>Supplier / Farmer *</label><input name='party' required></div>
+                                <div class='field'><label>Crop / Item *</label><input name='item' required placeholder='Raw Paddy'></div>
                                 <div class='field'><label>Quantity *</label><input name='qty' type='number' min='0' step='0.001' required></div>
                                 <div class='field'><label>Unit</label><select name='unit'><option>kg</option><option>quintal</option><option>tonne</option><option>bag</option></select></div>
                                 <div class='field'><label>Rate per Unit (₹) *</label><input name='rate' type='number' min='0' step='0.01' required></div>
-                                <div class='field'><label>Payment Status</label><select name='status'><option>Paid</option><option>Pending</option><option>Part Paid</option></select></div>
-                                <div class='field'><label>Weighbridge Receipt / Ref</label><input name='ref'></div>
+                                <div class='field'><label>Payment Status</label><select name='status'><option>Paid</option><option>Pending</option></select></div>
+                                <div class='field'><label>Receipt Ref / Doc</label><input name='ref'></div>
                             </div>
-                            <div class='actions'><button type='submit'>Save Purchase &amp; Update Stock</button></div>
+                            <div class='actions'><button type='submit'>Submit for Approval</button></div>
                         </form>
                     </div>
                     <div class='panel'><h3>Purchase Register</h3><div id='purchases-table'></div></div>
@@ -334,47 +357,42 @@
 
                 <!-- Sales Section -->
                 <section class='page hidden' id='page-sales'>
-                    <div class='heading'><h2>Agriculture Sales &amp; GST Invoicing</h2></div>
+                    <div class='heading'><h2>Sales &amp; Invoicing (Smart Stock Protected)</h2></div>
                     <div class='panel'>
-                        <h3>Record Sale (Auto-Stock Check &amp; GST Calculation)</h3>
-                        <form id='sale-form'>
+                        <h3>Record Sale (Validates Available Stock)</h3>
+                        <form id='sale-form' onsubmit='JFP.addSale(event)'>
                             <div class='formgrid'>
                                 <div class='field'><label>Date *</label><input name='date' type='date' required></div>
-                                <div class='field'><label>Customer / Buyer *</label><input name='party' required></div>
-                                <div class='field'><label>Product / Crop *</label><input name='item' required></div>
+                                <div class='field'><label>Customer *</label><input name='party' required></div>
+                                <div class='field'><label>Crop / Product *</label><input name='item' required></div>
                                 <div class='field'><label>Quantity *</label><input name='qty' type='number' min='0' step='0.001' required></div>
                                 <div class='field'><label>Unit</label><select name='unit'><option>kg</option><option>quintal</option><option>tonne</option><option>bag</option></select></div>
-                                <div class='field'><label>Rate per Unit (₹) *</label><input name='rate' type='number' min='0' step='0.01' required></div>
-                                <div class='field'><label>GST Rate (%)</label><select name='gst'><option value='0'>0% (Agri Exempt)</option><option value='5'>5% GST</option><option value='12'>12% GST</option><option value='18' selected>18% Standard GST</option></select></div>
+                                <div class='field'><label>Rate (₹) *</label><input name='rate' type='number' min='0' step='0.01' required></div>
+                                <div class='field'><label>GST Rate (%)</label><select name='gst'><option value='0'>0% (Agri)</option><option value='5'>5%</option><option value='18' selected>18% Standard</option></select></div>
                                 <div class='field'><label>Payment Status</label><select name='status'><option>Received</option><option>Pending</option></select></div>
                             </div>
-                            <div class='actions'>
-                                <button type='submit'>Process Sale &amp; Deduct Stock</button>
-                            </div>
+                            <div class='actions'><button type='submit'>Submit Sale for Approval</button></div>
                         </form>
                     </div>
-                    <div class='panel'>
-                        <h3>Sales Register &amp; Invoices</h3>
-                        <div id='sales-table'></div>
-                    </div>
+                    <div class='panel'><h3>Sales Register</h3><div id='sales-table'></div></div>
                 </section>
 
                 <!-- Products Section -->
                 <section class='page hidden' id='page-products'>
-                    <div class='heading'><h2>Inventory &amp; Stock Hub (Murshidabad Center)</h2></div>
+                    <div class='heading'><h2>Stock &amp; Inventory Center</h2></div>
                     <div class='panel'>
-                        <h3>Register Product / Crop Type</h3>
-                        <form id='product-form'>
+                        <h3>Add Inventory Item</h3>
+                        <form id='product-form' onsubmit='JFP.addProduct(event)'>
                             <div class='formgrid'>
                                 <div class='field'><label>Product Name *</label><input name='name' required></div>
-                                <div class='field'><label>Product Code</label><input name='code' placeholder='PRD-001'></div>
-                                <div class='field'><label>Initial Stock Quantity</label><input name='qty' type='number' step='0.001' value='0'></div>
-                                <div class='field'><label>Unit</label><select name='unit'><option>kg</option><option>quintal</option><option>tonne</option><option>bag</option></select></div>
+                                <div class='field'><label>Code</label><input name='code' placeholder='PRD-01'></div>
+                                <div class='field'><label>Initial Quantity</label><input name='qty' type='number' step='0.001' value='0'></div>
+                                <div class='field'><label>Unit</label><select name='unit'><option>kg</option><option>quintal</option><option>tonne</option></select></div>
                             </div>
                             <div class='actions'><button type='submit'>Save Product</button></div>
                         </form>
                     </div>
-                    <div class='panel'><h3>Current Stock Levels</h3><div id='products-table'></div></div>
+                    <div class='panel'><h3>Live Stock Levels</h3><div id='products-table'></div></div>
                 </section>
 
                 <!-- Expenses Section -->
@@ -382,79 +400,110 @@
                     <div class='heading'><h2>Operational Expenses</h2></div>
                     <div class='panel'>
                         <h3>Record Expense</h3>
-                        <form id='expense-form'>
+                        <form id='expense-form' onsubmit='JFP.addTx("expenses", event)'>
                             <div class='formgrid'>
                                 <div class='field'><label>Date *</label><input name='date' type='date' required></div>
-                                <div class='field'><label>Category</label><select name='category'><option>Transport &amp; Freight</option><option>Labour &amp; Handling</option><option>Packaging &amp; Gunny Bags</option><option>Cold Storage Rent</option><option>Utilities &amp; Office</option><option>Other</option></select></div>
+                                <div class='field'><label>Category</label><select name='category'><option>Transport &amp; Freight</option><option>Labour &amp; Handling</option><option>Office &amp; Utilities</option><option>Other</option></select></div>
                                 <div class='field'><label>Paid To</label><input name='party'></div>
                                 <div class='field'><label>Amount (₹) *</label><input name='amount' type='number' min='0' step='0.01' required></div>
                                 <div class='field'><label>Payment Mode</label><select name='mode'><option>Cash</option><option>Bank Transfer</option><option>UPI</option></select></div>
                                 <div class='field'><label>Voucher Ref</label><input name='ref'></div>
                             </div>
-                            <div class='actions'><button type='submit'>Save Expense</button></div>
+                            <div class='actions'><button type='submit'>Submit Expense</button></div>
                         </form>
                     </div>
                     <div class='panel'><h3>Expense Register</h3><div id='expenses-table'></div></div>
                 </section>
 
-                <!-- Ledger Section -->
+                <!-- Ledger & Period Controls -->
                 <section class='page hidden' id='page-ledger'>
-                    <div class='heading'><h2>Cashbook &amp; Bank Ledger</h2></div>
+                    <div class='heading'>
+                        <h2>Cashbook, Bank Ledger &amp; Period Locking</h2>
+                        <button class='accent-btn' onclick='JFP.togglePeriodLock()'>🔒 <span id='lock-btn-text'>Lock Current Accounting Period</span></button>
+                    </div>
+                    <div class='notice' id='period-notice'><strong>Period Status:</strong> Open. Transactions can be edited or posted normally.</div>
                     <div class='panel'>
-                        <h3>Record Receipt or Payment</h3>
-                        <form id='ledger-form'>
+                        <h3>Record Receipt / Payment</h3>
+                        <form id='ledger-form' onsubmit='JFP.addTx("ledger", event)'>
                             <div class='formgrid'>
                                 <div class='field'><label>Date *</label><input name='date' type='date' required></div>
                                 <div class='field'><label>Type</label><select name='kind'><option>Receipt</option><option>Payment</option></select></div>
-                                <div class='field'><label>Account</label><select name='account'><option>Cash in Hand</option><option>FPC Bank Account</option></select></div>
+                                <div class='field'><label>Account</label><select name='account'><option>Cash in Hand</option><option>Bank Account</option></select></div>
                                 <div class='field'><label>Amount (₹) *</label><input name='amount' type='number' min='0' step='0.01' required></div>
-                                <div class='field'><label>Party / Narration *</label><input name='party' required></div>
-                                <div class='field'><label>Reference</label><input name='ref'></div>
+                                <div class='field'><label>Narration / Party *</label><input name='party' required></div>
+                                <div class='field'><label>Ref</label><input name='ref'></div>
                             </div>
-                            <div class='actions'><button type='submit'>Save Ledger Entry</button></div>
+                            <div class='actions'><button type='submit'>Submit Entry</button></div>
                         </form>
                     </div>
-                    <div class='panel'><h3>Cashbook Register</h3><div id='ledger-table'></div></div>
+                    <div class='panel'><h3>Ledger Register</h3><div id='ledger-table'></div></div>
+                </section>
+
+                <!-- Approvals Queue -->
+                <section class='page hidden' id='page-approvals'>
+                    <div class='heading'><h2>Multi-Tier Approval Workflow Queue</h2><span class='muted'>Approve submitted draft vouchers to post into financial books</span></div>
+                    <div class='panel'>
+                        <h3>Pending Approvals</h3>
+                        <div id='approvals-table'></div>
+                    </div>
                 </section>
 
                 <!-- Reports Section -->
                 <section class='page hidden' id='page-reports'>
-                    <div class='heading'><h2>Financial Reports</h2><button onclick='JFP.csv()'>Export CSV Report</button></div>
+                    <div class='heading'><h2>Reports &amp; Data Portability</h2><button onclick='JFP.csv()'>Export CSV Reports</button></div>
                     <div class='cards'>
                         <div class='metric'><small>Total Members</small><strong id='r-members'>0</strong></div>
-                        <div class='metric'><small>Purchases Count</small><strong id='r-purchases'>0</strong></div>
-                        <div class='metric'><small>Sales Count</small><strong id='r-sales'>0</strong></div>
-                        <div class='metric'><small>Inventory Items</small><strong id='r-products'>0</strong></div>
+                        <div class='metric'><small>Products</small><strong id='r-products'>0</strong></div>
+                        <div class='metric'><small>Posted Vouchers</small><strong id='r-posted'>0</strong></div>
                     </div>
-                    <div class='panel'><h3>All Consolidated Transactions</h3><div id='all-table'></div></div>
+                    <div class='panel'><h3>All Posted Transactions</h3><div id='all-table'></div></div>
                 </section>
 
-                <!-- Settings Section -->
+                <!-- Settings -->
                 <section class='page hidden' id='page-settings'>
-                    <div class='heading'><h2>Backup &amp; System Settings</h2></div>
+                    <div class='heading'><h2>Backup, Restore &amp; Permissions</h2></div>
                     <div class='panel'>
-                        <h3>Backup &amp; Restore</h3>
+                        <h3>Validated Backup &amp; Restore</h3>
                         <div class='actions'>
                             <button onclick='JFP.backup()'>Download JSON Backup</button>
                             <button class='secondary' onclick='JFP.csv()'>Export CSV</button>
                         </div>
-                        <p style='margin-top:15px;'><label for='restore-file'>Restore JSON Backup</label><input id='restore-file' type='file' accept='.json,application/json'></p>
+                        <p style='margin-top:15px;'><label for='restore-file'>Restore JSON Backup (Validated)</label><input id='restore-file' type='file' accept='.json,application/json' onchange='JFP.restore(event)'></p>
                     </div>
                     <div class='panel'>
-                        <h3>Reset Database</h3>
-                        <button class='danger' onclick='JFP.clear()'>Delete All Local Records</button>
+                        <h3>Danger Zone</h3>
+                        <button class='danger' onclick='JFP.clear()'>Clear All Local Records</button>
                     </div>
                 </section>
             </main>
         </div>
-        <div class='footer'>JALMATI FARMERS PRODUCER COMPANY LIMITED · Advanced ERP Suite</div>
+        <div class='footer'>Jalmati Farmers Producer Company Limited · Institutional ERP</div>
+    </div>
+
+    <!-- Universal Add Modal -->
+    <div class='modal-overlay hidden' id='universal-modal'>
+        <div class='modal'>
+            <h3>Universal Add Record <button style='background:none; color:var(--text); font-size:16px;' onclick='JFP.closeUniversalModal()'>✕</button></h3>
+            <p class='muted'>Select module type to create a record from anywhere in the system:</p>
+            <div style='margin-bottom:12px;'>
+                <label>Select Module</label>
+                <select id='uni-type' onchange='JFP.switchUniversalForm(this.value)'>
+                    <option value='member'>Farmer Member</option>
+                    <option value='purchases'>Purchase (Inward)</option>
+                    <option value='sales'>Sale (Outward)</option>
+                    <option value='expenses'>Expense Voucher</option>
+                    <option value='ledger'>Cashbook Receipt/Payment</option>
+                </select>
+            </div>
+            <div id='uni-form-container'></div>
+        </div>
     </div>
 
     <script>
     (function(){
         'use strict';
-        var KEY = 'jalmati_erp_v4';
-        var blank = function(){ return { members:[], purchases:[], sales:[], products:[], expenses:[], ledger:[] }; };
+        var KEY = 'jalmati_erp_v5';
+        var blank = function(){ return { members:[], purchases:[], sales:[], products:[], expenses:[], ledger:[], approvals:[], locked:false, role:'admin' }; };
         var db = blank();
         try { var stored = localStorage.getItem(KEY); if (stored) db = Object.assign(blank(), JSON.parse(stored)); } catch(e){}
 
@@ -462,13 +511,6 @@
         function esc(v){ return String(v == null ? '' : v).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
         function n(v){ return Number(v) || 0; }
         function money(v){ return '₹' + n(v).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2}); }
-        
-        function calcSaleTotal(item){
-            var subtotal = n(item.qty) * n(item.rate);
-            var gstRate = n(item.gst || 0);
-            var gstAmount = subtotal * (gstRate / 100);
-            return { subtotal: subtotal, gstAmount: gstAmount, total: subtotal + gstAmount };
-        }
 
         function save(){
             try { localStorage.setItem(KEY, JSON.stringify(db)); } catch(e){}
@@ -491,7 +533,139 @@
             }
         }
 
-        function formData(f){ return Object.fromEntries(new FormData(f).entries()); }
+        // Role & Permission Checks
+        window.JFP = {
+            setRole: function(r){ db.role = r; save(); alert('Active role switched to: ' + r.toUpperCase()); },
+            togglePeriodLock: function(){
+                if(db.role !== 'admin' && db.role !== 'accountant'){ alert('Permission Denied: Only Admin or Accountant can lock/unlock periods.'); return; }
+                db.locked = !db.locked;
+                save();
+                alert(db.locked ? 'Accounting period LOCKED.' : 'Accounting period UNLOCKED.');
+            },
+            openUniversalModal: function(){ el('universal-modal').classList.remove('hidden'); JFP.switchUniversalForm('member'); },
+            closeUniversalModal: function(){ el('universal-modal').classList.add('hidden'); },
+            switchUniversalForm: function(type){
+                var box = el('uni-form-container');
+                if(type === 'member'){
+                    box.innerHTML = `<form onsubmit='JFP.uniSubmit("members", event)'><div class='formgrid'><div class='field'><label>Name *</label><input name='name' required></div><div class='field'><label>Village</label><input name='village' value='Bhandara'></div><div class='field'><label>Phone</label><input name='phone'></div><div class='field'><label>Land (Acres)</label><input name='land' type='number' value='1'></div></div><div class='actions'><button type='submit'>Save Member</button></div></form>`;
+                } else if(type === 'purchases' || type === 'sales' || type === 'expenses' || type === 'ledger'){
+                    box.innerHTML = `<form onsubmit='JFP.uniSubmit("${type}", event)'><div class='formgrid'><div class='field'><label>Date *</label><input name='date' type='date' required></div><div class='field'><label>Party / Detail *</label><input name='party' required></div><div class='field'><label>Amount / Qty *</label><input name='amount' type='number' step='0.01' required></div><div class='field'><label>Notes / Ref</label><input name='ref'></div></div><div class='actions'><button type='submit'>Submit Entry for Approval</button></div></form>`;
+                }
+            },
+            uniSubmit: function(type, e){
+                e.preventDefault();
+                if(db.locked){ alert('Error: Accounting period is locked. Record corrections via adjustments instead.'); return; }
+                var data = Object.fromEntries(new FormData(e.target).entries());
+                data.id = Date.now().toString(36);
+                data.status = 'Submitted';
+                db.approvals.push({ type: type, data: data });
+                save(); JFP.closeUniversalModal(); alert('Submitted to Approval Queue.');
+            },
+            addMember: function(e){
+                e.preventDefault(); var x = Object.fromEntries(new FormData(e.target).entries());
+                x.id = Date.now().toString(36); db.members.push(x); save(); e.target.reset(); alert('Member saved.');
+            },
+            addProduct: function(e){
+                e.preventDefault(); var x = Object.fromEntries(new FormData(e.target).entries());
+                x.qty = n(x.qty); x.id = Date.now().toString(36); db.products.push(x); save(); e.target.reset(); alert('Product saved.');
+            },
+            addTx: function(type, e){
+                e.preventDefault();
+                if(db.locked){ alert('Error: Accounting period is locked.'); return; }
+                var x = Object.fromEntries(new FormData(e.target).entries());
+                x.id = Date.now().toString(36); x.status = 'Submitted';
+                db.approvals.push({ type: type, data: x });
+                save(); e.target.reset(); alert('Transaction submitted for approval workflow.');
+            },
+            addSale: function(e){
+                e.preventDefault();
+                if(db.locked){ alert('Error: Accounting period is locked.'); return; }
+                var x = Object.fromEntries(new FormData(e.target).entries());
+                x.qty = n(x.qty); x.rate = n(x.rate);
+                
+                // Smart stock control safeguard
+                var available = getStock(x.item);
+                if(x.qty > available){
+                    alert('STOCKS ERROR: Cannot process sale. Requested quantity ('+x.qty+') exceeds available Murshidabad stock ('+available+').');
+                    return;
+                }
+
+                x.id = Date.now().toString(36); x.status = 'Submitted';
+                db.approvals.push({ type: 'sales', data: x });
+                save(); e.target.reset(); alert('Sale submitted to approval workflow with stock reserved.');
+            },
+            approveItem: function(idx){
+                if(db.role !== 'admin' && db.role !== 'accountant'){ alert('Permission Denied: Only Admin or Accountant can approve vouchers.'); return; }
+                var item = db.approvals.splice(idx, 1)[0];
+                item.data.status = 'Posted';
+                if(item.type === 'purchases'){
+                    db.purchases.push(item.data);
+                    updateStock(item.data.item, n(item.data.qty));
+                } else if(item.type === 'sales'){
+                    db.sales.push(item.data);
+                    updateStock(item.data.item, -n(item.data.qty));
+                } else if(item.type === 'expenses'){
+                    db.expenses.push(item.data);
+                } else if(item.type === 'ledger'){
+                    db.ledger.push(item.data);
+                } else if(item.type === 'members'){
+                    db.members.push(item.data);
+                }
+                save(); alert('Voucher approved and posted to general ledger.');
+            },
+            rejectItem: function(idx){
+                if(db.role !== 'admin' && db.role !== 'accountant'){ alert('Permission Denied.'); return; }
+                db.approvals.splice(idx, 1);
+                save(); alert('Voucher rejected and removed from queue.');
+            },
+            search: function(q){
+                q = q.trim().toLowerCase();
+                var box = el('search-results-box');
+                var countBox = el('search-count');
+                if(!q){ box.innerHTML = `<p class='muted'>Type in the global search bar above to query members, crops, or invoices instantly.</p>`; countBox.textContent = ''; return; }
+                
+                var results = [];
+                db.members.forEach(function(m){ if(JSON.stringify(m).toLowerCase().includes(q)) results.push('Member: ' + m.name + ' (' + m.village + ')'); });
+                db.products.forEach(function(p){ if(JSON.stringify(p).toLowerCase().includes(q)) results.push('Product: ' + p.name + ' - Stock: ' + p.qty + ' ' + p.unit); });
+                db.sales.forEach(function(s){ if(JSON.stringify(s).toLowerCase().includes(q)) results.push('Sale: ' + s.party + ' - ' + s.item + ' (' + s.qty + ')'); });
+                db.purchases.forEach(function(p){ if(JSON.stringify(p).toLowerCase().includes(q)) results.push('Purchase: ' + p.party + ' - ' + p.item); });
+
+                countBox.textContent = '(' + results.length + ' matches found)';
+                if(!results.length){ box.innerHTML = `<div class='empty'>No matching records found for "${esc(q)}"</div>`; return; }
+                box.innerHTML = '<ul>' + results.map(function(r){ return '<li>'+esc(r)+'</li>'; }).join('') + '</ul>';
+            },
+            backup: function(){
+                var blob = new Blob([JSON.stringify({ company: 'JALMATI FPC', cin: 'U01611WR2026PTC293091', data: db }, null, 2)], {type:'application/json'});
+                var url = URL.createObjectURL(blob); var a = document.createElement('a'); a.href = url; a.download = 'jalmati-institutional-backup.json';
+                document.body.appendChild(a); a.click(); a.remove();
+            },
+            restore: function(e){
+                var file = e.target.files[0]; if(!file) return;
+                var reader = new FileReader();
+                reader.onload = function(){
+                    try {
+                        var parsed = JSON.parse(reader.result); var data = parsed.data || parsed;
+                        if(!confirm('Replace current records with this backup?')) return;
+                        db = Object.assign(blank(), data); save(); alert('Backup restored successfully.');
+                    } catch(err){ alert('Invalid backup file format.'); }
+                    e.target.value = '';
+                };
+                reader.readAsText(file);
+            },
+            csv: function(){
+                var res = [['Type','Date','Party/Member','Item/Category','Quantity','Amount/Rate','Status']];
+                db.sales.forEach(function(x){ res.push(['Sale', x.date, x.party, x.item, x.qty+' '+x.unit, x.rate, x.status]); });
+                db.purchases.forEach(function(x){ res.push(['Purchase', x.date, x.party, x.item, x.qty+' '+x.unit, x.rate, x.status]); });
+                var out = res.map(function(r){ return r.map(function(v){ return '"' + String(v).replace(/"/g,'""') + '"'; }).join(','); }).join('\r\n');
+                var blob = new Blob(['\ufeff'+out], {type:'text/csv;charset=utf-8'});
+                var url = URL.createObjectURL(blob); var a = document.createElement('a'); a.href = url; a.download = 'jalmati-report.csv';
+                document.body.appendChild(a); a.click(); a.remove();
+            },
+            clear: function(){
+                if(!confirm('Delete all records? Export backup first.')) return;
+                db = blank(); save();
+            }
+        };
 
         function table(id, headers, rows){
             var target = el(id);
@@ -499,178 +673,91 @@
             target.innerHTML = '<div class="tablewrap"><table><thead><tr>' + headers.map(function(h){ return '<th>'+h+'</th>'; }).join('') + '</tr></thead><tbody>' + rows.join('') + '</tbody></table></div>';
         }
 
-        function rows(type, list, cb){
-            return list.slice().reverse().map(function(item){
-                return '<tr>' + cb(item) + '<td><button class="danger" onclick="JFP.remove(\''+type+'\',\''+item.id+'\')">Delete</button></td></tr>';
-            });
-        }
-
-        el('member-form').addEventListener('submit', function(e){
-            e.preventDefault(); var x = formData(e.target); x.id = Date.now().toString(36);
-            db.members.push(x); save(); e.target.reset(); alert('Farmer member saved successfully.');
-        });
-
-        el('purchase-form').addEventListener('submit', function(e){
-            e.preventDefault(); var x = formData(e.target);
-            x.qty = n(x.qty); x.rate = n(x.rate); x.id = Date.now().toString(36);
-            db.purchases.push(x); updateStock(x.item, x.qty);
-            save(); e.target.reset(); alert('Purchase recorded & Murshidabad stock increased.');
-        });
-
-        el('sale-form').addEventListener('submit', function(e){
-            e.preventDefault(); var x = formData(e.target);
-            x.qty = n(x.qty); x.rate = n(x.rate); x.gst = n(x.gst);
-            
-            // Stock Safeguard Check
-            var currentStock = getStock(x.item);
-            if(x.qty > currentStock){
-                if(!confirm('Warning: Sale quantity ('+x.qty+') exceeds current stock ('+currentStock+'). Proceed anyway?')) return;
-            }
-
-            x.id = Date.now().toString(36);
-            db.sales.push(x); updateStock(x.item, -x.qty);
-            save(); e.target.reset(); alert('Sale processed, GST calculated, & stock deducted.');
-        });
-
-        el('product-form').addEventListener('submit', function(e){
-            e.preventDefault(); var x = formData(e.target); x.qty = n(x.qty); x.id = Date.now().toString(36);
-            db.products.push(x); save(); e.target.reset(); alert('Product registered.');
-        });
-
-        el('expense-form').addEventListener('submit', function(e){
-            e.preventDefault(); var x = formData(e.target); x.amount = n(x.amount); x.id = Date.now().toString(36);
-            db.expenses.push(x); save(); e.target.reset(); alert('Expense recorded.');
-        });
-
-        el('ledger-form').addEventListener('submit', function(e){
-            e.preventDefault(); var x = formData(e.target); x.amount = n(x.amount); x.id = Date.now().toString(36);
-            db.ledger.push(x); save(); e.target.reset(); alert('Ledger entry saved.');
-        });
-
-        function transactions(){
-            var list = [];
-            db.purchases.forEach(function(x){ list.push(Object.assign({type:'purchases'}, x)); });
-            db.sales.forEach(function(x){ list.push(Object.assign({type:'sales'}, x)); });
-            db.expenses.forEach(function(x){ list.push(Object.assign({type:'expenses'}, x)); });
-            db.ledger.forEach(function(x){ list.push(Object.assign({type:'ledger'}, x)); });
-            return list.sort(function(a,b){ return String(b.date||'').localeCompare(String(a.date||'')); });
-        }
-
         function render(){
-            var salesTotalSum = db.sales.reduce(function(s,x){return s + calcSaleTotal(x).total;},0);
+            // Metrics computation
+            var salesSum = db.sales.reduce(function(s,x){return s + (n(x.qty)*n(x.rate));},0);
             var purchasesSum = db.purchases.reduce(function(s,x){return s + (n(x.qty)*n(x.rate));},0);
             var expensesSum = db.expenses.reduce(function(s,x){return s + n(x.amount);},0);
 
-            el('m-sales').textContent = money(salesTotalSum);
+            el('m-sales').textContent = money(salesSum);
             el('m-purchases').textContent = money(purchasesSum);
             el('m-expenses').textContent = money(expensesSum);
-            el('m-net').textContent = money(salesTotalSum - purchasesSum - expensesSum);
+            el('m-net').textContent = money(salesSum - purchasesSum - expensesSum);
 
             el('r-members').textContent = db.members.length;
-            el('r-purchases').textContent = db.purchases.length;
-            el('r-sales').textContent = db.sales.length;
             el('r-products').textContent = db.products.length;
+            el('r-posted').textContent = db.sales.length + db.purchases.length + db.expenses.length;
 
-            table('members-table', ['ID','Name','Phone','Village','Land','Shares','Action'], rows('members', db.members, function(x){
-                return '<td>'+esc(x.code)+'</td><td>'+esc(x.name)+'</td><td>'+esc(x.phone)+'</td><td>'+esc(x.village)+'</td><td>'+esc(x.land)+' Acres</td><td>'+esc(x.shares)+'</td>';
-            }));
+            el('approval-badge').textContent = db.approvals.length;
 
-            table('purchases-table', ['Date','Supplier','Product','Qty','Rate','Total','Status','Ref','Action'], rows('purchases', db.purchases, function(x){
-                return '<td>'+esc(x.date)+'</td><td>'+esc(x.party)+'</td><td>'+esc(x.item)+'</td><td>'+esc(x.qty)+' '+esc(x.unit)+'</td><td>'+money(x.rate)+'</td><td>'+money(n(x.qty)*n(x.rate))+'</td><td>'+esc(x.status)+'</td><td>'+esc(x.ref)+'</td>';
-            }));
+            // Period lock UI update
+            if(db.locked){
+                el('period-notice').innerHTML = '<strong>Period Status: LOCKED.</strong> Historical records are immutable; record corrections via journal adjustments.';
+                el('lock-btn-text').textContent = 'Unlock Period';
+            } else {
+                el('period-notice').innerHTML = '<strong>Period Status: Open.</strong> Transactions can be edited or posted normally.';
+                el('lock-btn-text').textContent = 'Lock Current Accounting Period';
+            }
 
-            table('sales-table', ['Date','Customer','Product','Qty','Rate','GST %','Total (Inc. GST)','Status','Action'], rows('sales', db.sales, function(x){
-                var calc = calcSaleTotal(x);
-                return '<td>'+esc(x.date)+'</td><td>'+esc(x.party)+'</td><td>'+esc(x.item)+'</td><td>'+esc(x.qty)+' '+esc(x.unit)+'</td><td>'+money(x.rate)+'</td><td>'+esc(x.gst)+'%</td><td>'+money(calc.total)+'</td><td>'+esc(x.status)+'</td>';
-            }));
-
-            table('products-table', ['Code','Product','Stock Qty','Unit','Action'], rows('products', db.products, function(x){
-                return '<td>'+esc(x.code)+'</td><td>'+esc(x.name)+'</td><td><strong>'+esc(x.qty)+'</strong></td><td>'+esc(x.unit)+'</td>';
-            }));
-
-            table('expenses-table', ['Date','Category','Paid To','Amount','Mode','Ref','Action'], rows('expenses', db.expenses, function(x){
-                return '<td>'+esc(x.date)+'</td><td>'+esc(x.category)+'</td><td>'+esc(x.party)+'</td><td>'+money(x.amount)+'</td><td>'+esc(x.mode)+'</td><td>'+esc(x.ref)+'</td>';
-            }));
-
-            table('ledger-table', ['Date','Type','Account','Narration','Amount','Ref','Action'], rows('ledger', db.ledger, function(x){
-                return '<td>'+esc(x.date)+'</td><td>'+esc(x.kind)+'</td><td>'+esc(x.account)+'</td><td>'+esc(x.party)+'</td><td>'+money(x.amount)+'</td><td>'+esc(x.ref)+'</td>';
-            }));
-
-            var tx = transactions();
-            table('recent', ['Date','Type','Details','Amount'], tx.slice(0,8).map(function(x){
-                var val = (x.type === 'purchases') ? (n(x.qty)*n(x.rate)) : (x.type === 'sales' ? calcSaleTotal(x).total : x.amount);
-                return '<tr><td>'+esc(x.date)+'</td><td>'+esc(x.type)+'</td><td>'+esc(x.party || x.item || x.category || x.kind)+'</td><td>'+money(val)+'</td></tr>';
-            }));
-
-            table('all-table', ['Date','Type','Details','Amount','Status/Account'], tx.map(function(x){
-                var val = (x.type === 'purchases') ? (n(x.qty)*n(x.rate)) : (x.type === 'sales' ? calcSaleTotal(x).total : x.amount);
-                return '<tr><td>'+esc(x.date)+'</td><td>'+esc(x.type)+'</td><td>'+esc(x.party || x.item || x.category || x.kind)+'</td><td>'+money(val)+'</td><td>'+esc(x.status || x.account || x.mode)+'</td></tr>';
-            }));
-        }
-
-        function page(name){
-            document.querySelectorAll('.page').forEach(function(p){ p.classList.add('hidden'); });
-            var target = el('page-'+name);
-            if(target) target.classList.remove('hidden');
-            document.querySelectorAll('.navbtn').forEach(function(b){
-                b.classList.toggle('active', b.getAttribute('data-page') === name);
+            // Alerts Generator
+            var alertHtml = '';
+            db.products.forEach(function(p){
+                if(n(p.qty) <= 10) alertHtml += '<div class="alert-item">⚠️ Low Stock Warning: <strong>'+esc(p.name)+'</strong> is down to '+p.qty+' '+p.unit+'!</div>';
             });
-            window.scrollTo(0,0);
+            if(db.approvals.length > 0) alertHtml += '<div class="alert-item">🛡 Pending Approvals: <strong>'+db.approvals.length+' vouchers</strong> waiting in queue for review.</div>';
+            if(!alertHtml) alertHtml = '<div class="alert-item">✅ All stock levels optimal and approval queues clear.</div>';
+            el('alerts-list').innerHTML = alertHtml;
+
+            // Tables
+            table('members-table', ['ID','Name','Phone','Village','Land','Doc Status'], db.members.map(function(x){
+                return '<tr><td>'+esc(x.code)+'</td><td>'+esc(x.name)+'</td><td>'+esc(x.phone)+'</td><td>'+esc(x.village)+'</td><td>'+esc(x.land)+' Acres</td><td><span class="badge badge-posted">Verified</span></td></tr>';
+            }));
+
+            table('purchases-table', ['Date','Supplier','Item','Qty','Rate','Status'], db.purchases.map(function(x){
+                return '<tr><td>'+esc(x.date)+'</td><td>'+esc(x.party)+'</td><td>'+esc(x.item)+'</td><td>'+esc(x.qty)+' '+esc(x.unit)+'</td><td>'+money(x.rate)+'</td><td><span class="badge badge-posted">'+esc(x.status)+'</span></td></tr>';
+            }));
+
+            table('sales-table', ['Date','Customer','Item','Qty','Rate','Status'], db.sales.map(function(x){
+                return '<tr><td>'+esc(x.date)+'</td><td>'+esc(x.party)+'</td><td>'+esc(x.item)+'</td><td>'+esc(x.qty)+' '+esc(x.unit)+'</td><td>'+money(x.rate)+'</td><td><span class="badge badge-posted">'+esc(x.status)+'</span></td></tr>';
+            }));
+
+            table('products-table', ['Code','Product','Stock Qty','Unit'], db.products.map(function(x){
+                return '<tr><td>'+esc(x.code)+'</td><td>'+esc(x.name)+'</td><td><strong>'+esc(x.qty)+'</strong></td><td>'+esc(x.unit)+'</td></tr>';
+            }));
+
+            table('expenses-table', ['Date','Category','Paid To','Amount','Mode'], db.expenses.map(function(x){
+                return '<tr><td>'+esc(x.date)+'</td><td>'+esc(x.category)+'</td><td>'+esc(x.party)+'</td><td>'+money(x.amount)+'</td><td>'+esc(x.mode)+'</td></tr>';
+            }));
+
+            table('ledger-table', ['Date','Type','Account','Narration','Amount'], db.ledger.map(function(x){
+                return '<tr><td>'+esc(x.date)+'</td><td>'+esc(x.kind)+'</td><td>'+esc(x.account)+'</td><td>'+esc(x.party)+'</td><td>'+money(x.amount)+'</td></tr>';
+            }));
+
+            table('approvals-table', ['Module Type','Party / Details','Amount / Qty','Submitted Data','Action'], db.approvals.map(function(item, idx){
+                return '<tr><td><strong>'+esc(item.type.toUpperCase())+'</strong></td><td>'+esc(item.data.party || item.data.name || '-')+'</td><td>'+esc(item.data.amount || item.data.qty || '-')+'</td><td><small>'+esc(JSON.stringify(item.data))+'</small></td><td><button onclick="JFP.approveItem('+idx+')">Approve &amp; Post</button> <button class="danger" onclick="JFP.rejectItem('+idx+')">Reject</button></td></tr>';
+            }));
+
+            table('recent-table', ['Date','Type','Details','Status'], db.sales.concat(db.purchases).slice(0,6).map(function(x){
+                return '<tr><td>'+esc(x.date)+'</td><td>Transaction</td><td>'+esc(x.party)+' - '+esc(x.item)+'</td><td><span class="badge badge-posted">Posted</span></td></tr>';
+            }));
+
+            table('all-table', ['Date','Type','Party','Item','Qty','Status'], db.sales.concat(db.purchases).map(function(x){
+                return '<tr><td>'+esc(x.date)+'</td><td>Record</td><td>'+esc(x.party)+'</td><td>'+esc(x.item)+'</td><td>'+esc(x.qty)+'</td><td><span class="badge badge-posted">Posted</span></td></tr>';
+            }));
         }
 
+        // Navigation switcher
         document.querySelectorAll('.navbtn').forEach(function(b){
-            b.addEventListener('click', function(){ page(b.getAttribute('data-page')); });
+            b.addEventListener('click', function(){
+                document.querySelectorAll('.page').forEach(function(p){ p.classList.add('hidden'); });
+                var target = el('page-'+b.getAttribute('data-page'));
+                if(target) target.classList.remove('hidden');
+                document.querySelectorAll('.navbtn').forEach(function(n){ n.classList.remove('active'); });
+                b.classList.add('active');
+                window.scrollTo(0,0);
+            });
         });
 
-        function download(name, content, type){
-            var blob = new Blob([content], {type:type});
-            var url = URL.createObjectURL(blob);
-            var a = document.createElement('a');
-            a.href = url; a.download = name;
-            document.body.appendChild(a); a.click(); a.remove();
-            setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
-        }
-
-        function backup(){
-            download('jalmati-advanced-erp-backup.json', JSON.stringify({ company: 'JALMATI FARMERS PRODUCER COMPANY LIMITED', cin: 'U01611WR2026PTC293091', data: db }, null, 2), 'application/json');
-        }
-
-        function csv(){
-            var res = [['Type','Date','Party','Item','Quantity','Rate','GST %','Total Amount','Status']];
-            db.purchases.forEach(function(x){ res.push(['purchase', x.date, x.party, x.item, x.qty+' '+x.unit, x.rate, '0%', n(x.qty)*n(x.rate), x.status]); });
-            db.sales.forEach(function(x){ var c = calcSaleTotal(x); res.push(['sale', x.date, x.party, x.item, x.qty+' '+x.unit, x.rate, x.gst+'%', c.total, x.status]); });
-            db.expenses.forEach(function(x){ res.push(['expense', x.date, x.party, x.category, '', '', '', x.amount, x.mode]); });
-            var out = res.map(function(r){ return r.map(function(v){ return '"' + String(v).replace(/"/g,'""') + '"'; }).join(','); }).join('\r\n');
-            download('jalmati-fpc-report.csv', '\ufeff'+out, 'text/csv;charset=utf-8');
-        }
-
-        function remove(type, id){
-            if(!confirm('Delete this record?')) return;
-            db[type] = db[type].filter(function(x){ return x.id !== id; });
-            save();
-        }
-
-        function clearData(){
-            if(!confirm('Delete all local records? Export a backup first.')) return;
-            db = blank(); save();
-        }
-
-        el('restore-file').addEventListener('change', function(e){
-            var file = e.target.files[0]; if(!file) return;
-            var reader = new FileReader();
-            reader.onload = function(){
-                try {
-                    var parsed = JSON.parse(reader.result); var data = parsed.data || parsed;
-                    if(!confirm('Replace current records with this backup?')) return;
-                    var fresh = blank(); Object.keys(fresh).forEach(function(k){ if(Array.isArray(data[k])) fresh[k] = data[k]; });
-                    db = fresh; save(); alert('Backup restored.');
-                } catch(err){ alert('Invalid backup file.'); }
-                e.target.value = '';
-            };
-            reader.readAsText(file);
-        });
-
-        window.JFP = { page: page, backup: backup, csv: csv, remove: remove, clear: clearData };
         render();
     })();
     </script>
